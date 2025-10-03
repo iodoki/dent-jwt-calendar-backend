@@ -1,0 +1,6 @@
+ALTER TABLE users
+    ADD COLUMN email VARCHAR(50) UNIQUE;
+ALTER TABLE users
+    ADD COLUMN enabled boolean NOT NULL DEFAULT true;
+ALTER TABLE users
+    ADD COLUMN clinic_id UUID NOT NULL REFERENCES clinics(id);

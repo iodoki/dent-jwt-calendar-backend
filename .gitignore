@@ -1,0 +1,10 @@
+/target
+/.mvn
+.mvn/wrapper/maven-wrapper.jar
+**/application.yml
+**/application.properties
+db-data
+*.log
+.idea
+.vscode
+*.iml
