@@ -1,10 +1,7 @@
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +12,9 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceCategory {
+@Data
+@Builder
+public class ClinicServiceCategory {
 
     @Id
     @GeneratedValue
@@ -28,5 +27,5 @@ public class ServiceCategory {
     private String description;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Service> services = new HashSet<>();
+    private Set<ClinicService> clinicServices = new HashSet<>();
 }

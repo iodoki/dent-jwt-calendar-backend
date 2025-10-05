@@ -1,7 +1,7 @@
 package com.example.dentalapp.service;
 
-import com.example.dentalapp.entity.User;
-import com.example.dentalapp.entity.Role;
+import com.example.dentalapp.model.User;
+import com.example.dentalapp.model.Role;
 import com.example.dentalapp.repository.RoleRepository;
 import com.example.dentalapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

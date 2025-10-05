@@ -1,7 +1,7 @@
 
 package com.example.dentalapp.repository;
 
-import com.example.dentalapp.entity.User;
+import com.example.dentalapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

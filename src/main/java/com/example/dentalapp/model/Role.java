@@ -1,5 +1,5 @@
 
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;

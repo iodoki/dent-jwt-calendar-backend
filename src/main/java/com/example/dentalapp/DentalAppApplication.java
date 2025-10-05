@@ -6,8 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.example.dentalapp.entity.Role;
-import com.example.dentalapp.entity.User;
+import com.example.dentalapp.model.Role;
+import com.example.dentalapp.model.User;
 import com.example.dentalapp.repository.RoleRepository;
 import com.example.dentalapp.repository.UserRepository;
 

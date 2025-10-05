@@ -1,10 +1,7 @@
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -12,7 +9,9 @@ import java.util.UUID;
 @Table(name = "services")
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
-public class Service {
+@Data
+@Builder
+public class ClinicService {
 
     // Getters and setters
     @Setter
@@ -33,5 +32,5 @@ public class Service {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private ServiceCategory category;
+    private ClinicServiceCategory category;
 }

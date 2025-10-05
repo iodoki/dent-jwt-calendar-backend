@@ -1,12 +1,7 @@
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Table(name = "appointment_services")
@@ -14,6 +9,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class AppointmentService {
 
     @EmbeddedId
@@ -27,7 +24,7 @@ public class AppointmentService {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("patientServiceId")
     @JoinColumn(name = "patient_service_id")
-    private PatientService patientService;
+    private PatientServiceRecord patientServiceRecord;
 
     // getters & setters
 }

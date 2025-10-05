@@ -1,11 +1,10 @@
 
 package com.example.dentalapp.controller;
 
-import com.example.dentalapp.entity.Role;
-import com.example.dentalapp.entity.User;
+import com.example.dentalapp.model.Role;
+import com.example.dentalapp.model.User;
 import com.example.dentalapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

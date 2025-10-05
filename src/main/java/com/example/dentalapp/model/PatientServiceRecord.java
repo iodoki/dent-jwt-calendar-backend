@@ -1,10 +1,7 @@
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +11,9 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatientService {
+@Data
+@Builder
+public class PatientServiceRecord {
 
     // Getters and setters
     @Id
@@ -27,7 +26,7 @@ public class PatientService {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "service_id")
-    private Service service;
+    private ClinicService service;
 
     @Column(name = "description", length = 50, nullable = false)
     private String description; // e.g., For tooth number "11", "26", "47"

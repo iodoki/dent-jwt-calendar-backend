@@ -1,5 +1,5 @@
 
-package com.example.dentalapp.entity;
+package com.example.dentalapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data
+@Builder
 public class User {
     @Id
     @GeneratedValue
