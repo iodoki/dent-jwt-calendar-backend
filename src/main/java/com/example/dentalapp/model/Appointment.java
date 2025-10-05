@@ -48,7 +48,7 @@ public class Appointment {
 
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<AppointmentService> appointmentServices = new HashSet<>();
+    private Set<AppointmentPatientServiceRecord> appointmentPatientServiceRecords = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "clinic_id", nullable = false)

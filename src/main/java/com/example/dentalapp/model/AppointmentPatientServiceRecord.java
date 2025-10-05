@@ -11,10 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Builder
-public class AppointmentService {
+public class AppointmentPatientServiceRecord {
 
     @EmbeddedId
-    private AppointmentServiceId id = new AppointmentServiceId();
+    private AppointmentPatientServiceRecordId id = new AppointmentPatientServiceRecordId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("appointmentId")

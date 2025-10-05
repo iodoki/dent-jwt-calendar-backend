@@ -6,14 +6,14 @@ import java.util.UUID;
 import java.util.Objects;
 
 @Embeddable
-public class AppointmentServiceId implements Serializable {
+public class AppointmentPatientServiceRecordId implements Serializable {
 
     private UUID appointmentId;
     private UUID patientServiceId;
 
-    public AppointmentServiceId() {}
+    public AppointmentPatientServiceRecordId() {}
 
-    public AppointmentServiceId(UUID appointmentId, UUID patientServiceId) {
+    public AppointmentPatientServiceRecordId(UUID appointmentId, UUID patientServiceId) {
         this.appointmentId = appointmentId;
         this.patientServiceId = patientServiceId;
     }
@@ -22,8 +22,8 @@ public class AppointmentServiceId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AppointmentServiceId)) return false;
-        AppointmentServiceId that = (AppointmentServiceId) o;
+        if (!(o instanceof AppointmentPatientServiceRecordId)) return false;
+        AppointmentPatientServiceRecordId that = (AppointmentPatientServiceRecordId) o;
         return Objects.equals(appointmentId, that.appointmentId) &&
                 Objects.equals(patientServiceId, that.patientServiceId);
     }
