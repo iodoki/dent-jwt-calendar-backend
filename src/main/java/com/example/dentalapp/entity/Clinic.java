@@ -15,7 +15,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Clinic {
-
     @Id
     @GeneratedValue
     private UUID id;

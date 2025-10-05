@@ -1,14 +1,19 @@
 package com.example.dentalapp.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
 @Entity
 @Table(name = "patient_services")
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PatientService {
 
     // Getters and setters

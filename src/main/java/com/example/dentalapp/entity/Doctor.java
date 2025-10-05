@@ -1,6 +1,10 @@
 package com.example.dentalapp.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -9,6 +13,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "doctors")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Doctor {
 
     @Id

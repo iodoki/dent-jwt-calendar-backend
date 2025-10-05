@@ -5,10 +5,8 @@ import com.example.dentalapp.entity.Role;
 import com.example.dentalapp.repository.RoleRepository;
 import com.example.dentalapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,13 +18,11 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     public User createUser(String username, String rawPassword, Set<String> roleNames) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(rawPassword)); // hash password
+       // user.setPassword(passwordEncoder.encode(rawPassword)); // hash password
+         user.setPassword(rawPassword); // hash password
 
         // assign roles
         Set<Role> roles = roleNames.stream()

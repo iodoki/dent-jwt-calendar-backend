@@ -10,7 +10,6 @@ import com.example.dentalapp.entity.Role;
 import com.example.dentalapp.entity.User;
 import com.example.dentalapp.repository.RoleRepository;
 import com.example.dentalapp.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,13 +22,13 @@ public class DentalAppApplication {
 
     // create default roles and admin user at startup if missing
     @Bean
-    CommandLineRunner init(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    CommandLineRunner init(RoleRepository roleRepo, UserRepository userRepo) {
         return args -> {
             System.out.println("✅ Init running...");
             if (userRepo.findByUsername("admin").isEmpty()) {
                 User user = new User();
                 user.setUsername("admin");
-                user.setPassword(passwordEncoder.encode("admin123"));
+                user.setPassword("admin123");
                 // assign roles
                 Set<Role> roles = roleRepo.findByName("ROLE_ADMIN").stream().collect(Collectors.toSet());
                 user.setRoles(roles);

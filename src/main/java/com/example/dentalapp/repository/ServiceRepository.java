@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
     List<Service> findByCategoryId(UUID categoryId);
+    List<Service> findByCategoryName(String  name);
 }

@@ -3,6 +3,7 @@ package com.example.dentalapp.controller;
 import com.example.dentalapp.entity.Role;
 import com.example.dentalapp.entity.User;
 import com.example.dentalapp.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody Map<String, Object> body) {
