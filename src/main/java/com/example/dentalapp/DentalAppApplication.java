@@ -10,8 +10,10 @@ import com.example.dentalapp.entity.Role;
 import com.example.dentalapp.entity.User;
 import com.example.dentalapp.repository.RoleRepository;
 import com.example.dentalapp.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class DentalAppApplication {
@@ -23,17 +25,16 @@ public class DentalAppApplication {
     @Bean
     CommandLineRunner init(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
         return args -> {
-            Role adminRole = roleRepo.findByName("ROLE_ADMIN").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_ADMIN")));
-            Role userRole = roleRepo.findByName("ROLE_USER").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_USER")));
-
+            System.out.println("✅ Init running...");
             if (userRepo.findByUsername("admin").isEmpty()) {
-                User admin = new User();
-                admin.setUsername("admin");
-                admin.setFullName("Administrator");
-                admin.setPassword(passwordEncoder.encode("password"));
-                admin.getRoles().add(adminRole);
-                userRepo.save(admin);
-                System.out.println("Created default admin user -> username: admin password: password");
+                User user = new User();
+                user.setUsername("admin");
+                user.setPassword(passwordEncoder.encode("admin123"));
+                // assign roles
+                Set<Role> roles = roleRepo.findByName("ROLE_ADMIN").stream().collect(Collectors.toSet());
+                user.setRoles(roles);
+                userRepo.save(user);
+                System.out.println("Created user admin/admin123");
             }
         };
     }

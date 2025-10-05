@@ -1,0 +1,70 @@
+ALTER TABLE clinics
+    ALTER COLUMN address SET NOT NULL;
+
+ALTER TABLE patient_services
+    ALTER COLUMN date SET NOT NULL;
+
+ALTER TABLE patients
+    ALTER COLUMN date_of_birth SET NOT NULL;
+
+ALTER TABLE patient_services
+ALTER
+COLUMN description TYPE VARCHAR(50) USING (description::VARCHAR(50));
+
+ALTER TABLE patient_services
+    ALTER COLUMN description SET NOT NULL;
+
+ALTER TABLE clinics
+    ALTER COLUMN email SET NOT NULL;
+
+ALTER TABLE patients
+    ALTER COLUMN email SET NOT NULL;
+
+ALTER TABLE patients
+    ALTER COLUMN fathername SET NOT NULL;
+
+ALTER TABLE patients
+ALTER
+COLUMN first_name TYPE VARCHAR(50) USING (first_name::VARCHAR(50));
+
+ALTER TABLE patients
+    ALTER COLUMN first_name SET NOT NULL;
+
+ALTER TABLE patients
+ALTER
+COLUMN last_name TYPE VARCHAR(50) USING (last_name::VARCHAR(50));
+
+ALTER TABLE patients
+    ALTER COLUMN last_name SET NOT NULL;
+
+ALTER TABLE roles
+ALTER
+COLUMN name TYPE VARCHAR(255) USING (name::VARCHAR(255));
+
+ALTER TABLE service_categories
+ALTER
+COLUMN name TYPE VARCHAR(255) USING (name::VARCHAR(255));
+
+ALTER TABLE services
+ALTER
+COLUMN name TYPE VARCHAR(255) USING (name::VARCHAR(255));
+
+ALTER TABLE clinics
+ALTER
+COLUMN phone TYPE VARCHAR(20) USING (phone::VARCHAR(20));
+
+ALTER TABLE clinics
+    ALTER COLUMN phone SET NOT NULL;
+
+ALTER TABLE patients
+    ALTER COLUMN phone SET NOT NULL;
+
+ALTER TABLE services
+    ALTER COLUMN price SET NOT NULL;
+
+ALTER TABLE doctors
+ALTER
+COLUMN specialty TYPE VARCHAR(50) USING (specialty::VARCHAR(50));
+
+ALTER TABLE doctors
+    ALTER COLUMN specialty SET NOT NULL;

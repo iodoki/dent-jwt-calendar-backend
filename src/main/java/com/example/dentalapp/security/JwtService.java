@@ -23,13 +23,12 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    // Generate token including username and clinicId as claim
-    public String generateToken(String username, UUID clinicId, List<String> roles) {
+    // Generate token including usernam
+    public String generateToken(String username,  List<String> roles) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + expirationMs);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("clinicId", clinicId.toString());
         claims.put("roles", roles);
 
         return Jwts.builder()
@@ -49,16 +48,6 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
-        } catch (JwtException e) {
-            return null;
-        }
-    }
-
-    public UUID extractClinicId(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
-                    .parseClaimsJws(token).getBody();
-            return UUID.fromString(claims.get("clinicId", String.class));
         } catch (JwtException e) {
             return null;
         }

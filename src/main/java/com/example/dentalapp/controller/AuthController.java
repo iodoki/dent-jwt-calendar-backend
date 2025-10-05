@@ -17,6 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,36 +31,32 @@ import java.util.UUID;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()
-                    )
+            String username = request.get("username");
+            String password = request.get("password");
+            System.out.println("✅ login running username..."+username);
+
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            User user = userRepository.findByUsername(request.getUsername())
+            User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            UUID clinicId = user.getClinic() != null ? user.getClinic().getId() : null;
+            List<String> roles = user.getRoles().stream().map(r -> r.getName()).toList();
+            String token = jwtService.generateToken(user.getUsername(), roles);
 
-            List<String> roles = user.getRoles().stream().map(Role::getName).toList();
-            String token = jwtService.generateToken(user.getUsername(), clinicId, roles);
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "username", username,
+                    "roles", roles
+            ));
 
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("username", user.getUsername());
-            response.put("roles", roles);
-            response.put("clinicId", clinicId);
-
-            return ResponseEntity.ok(response);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password"));

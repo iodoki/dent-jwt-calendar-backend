@@ -15,7 +15,6 @@ public class Appointment {
     @GeneratedValue
     private UUID id;
 
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;

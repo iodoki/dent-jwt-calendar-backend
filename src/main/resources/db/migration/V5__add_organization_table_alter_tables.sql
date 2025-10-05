@@ -17,5 +17,3 @@ ALTER TABLE services
     ADD COLUMN clinic_id UUID NOT NULL REFERENCES clinics(id);
 ALTER TABLE appointments
     ADD COLUMN clinic_id UUID NOT NULL REFERENCES clinics(id);
-alter table appointments
-    owner to dentaluser;
