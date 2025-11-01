@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/service-categories")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5000")
 public class ClinicServiceCategoryController {
 
     private final ClinicServiceCategoryService service;

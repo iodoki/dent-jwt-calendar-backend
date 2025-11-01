@@ -7,5 +7,6 @@ public record ClinicServiceDTO(
         String name,
         double price,
         UUID clinicId,
-        UUID categoryId
+        UUID categoryId,
+        String categoryName
 ) {}

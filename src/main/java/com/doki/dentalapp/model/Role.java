@@ -9,6 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "roles")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Builder
 public class Role {
     @Id
     @GeneratedValue

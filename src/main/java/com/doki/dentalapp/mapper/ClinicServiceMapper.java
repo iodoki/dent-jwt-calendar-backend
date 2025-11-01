@@ -13,7 +13,9 @@ public class ClinicServiceMapper {
                 clinicService.getName(),
                 clinicService.getPrice(),
                 clinicService.getClinic() != null ? clinicService.getClinic().getId() : null,
-                clinicService.getCategory() != null ? clinicService.getCategory().getId() : null
+                clinicService.getCategory() != null ? clinicService.getCategory().getId() : null,
+                clinicService.getCategory() != null ? clinicService.getCategory().getName() : null
+
         );
     }
 

@@ -2,13 +2,15 @@ package com.doki.dentalapp.controller;
 
 import com.doki.dentalapp.dto.ClinicServiceDTO;
 import com.doki.dentalapp.service.ClinicServiceService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5000")
 public class ClinicServiceController {
 
     private final ClinicServiceService service;
@@ -22,4 +24,24 @@ public class ClinicServiceController {
         return service.getAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ClinicServiceDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<ClinicServiceDTO> create(@RequestBody ClinicServiceDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClinicServiceDTO> update(@PathVariable UUID id, @RequestBody ClinicServiceDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

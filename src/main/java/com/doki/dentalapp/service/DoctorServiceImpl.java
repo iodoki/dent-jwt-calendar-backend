@@ -29,9 +29,9 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDTO createDoctor(DoctorDTO dto) {
         Doctor doctor = new Doctor();
-        doctor.setSpecialty(dto.getSpecialty());
-        doctor.setUser(dto.getUserId() != null ? userRepository.findById(dto.getUserId()).orElse(null) : null);
-        doctor.setClinic(clinicRepository.findById(dto.getClinicId()).orElseThrow());
+        doctor.setSpecialty(dto.specialty());
+        doctor.setUser(dto.userId() != null ? userRepository.findById(dto.userId()).orElse(null) : null);
+        doctor.setClinic(clinicRepository.findById(dto.clinicId()).orElseThrow());
         doctorRepository.save(doctor);
         return mapToDTO(doctor);
     }
@@ -39,10 +39,10 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDTO updateDoctor(UUID id, DoctorDTO dto) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow();
-        doctor.setSpecialty(dto.getSpecialty());
-        if (dto.getUserId() != null)
-            doctor.setUser(userRepository.findById(dto.getUserId()).orElse(null));
-        doctor.setClinic(clinicRepository.findById(dto.getClinicId()).orElseThrow());
+        doctor.setSpecialty(dto.specialty());
+        if (dto.userId() != null)
+            doctor.setUser(userRepository.findById(dto.userId()).orElse(null));
+        doctor.setClinic(clinicRepository.findById(dto.clinicId()).orElseThrow());
         doctorRepository.save(doctor);
         return mapToDTO(doctor);
     }
@@ -69,7 +69,10 @@ public class DoctorServiceImpl implements DoctorService {
                 doctor.getId(),
                 doctor.getUser() != null ? doctor.getUser().getId() : null,
                 doctor.getClinic().getId(),
-                doctor.getSpecialty()
+                doctor.getSpecialty(),
+                doctor.getFirstName(),
+                doctor.getLastName(),
+                doctor.getFullName()
         );
     }
 }

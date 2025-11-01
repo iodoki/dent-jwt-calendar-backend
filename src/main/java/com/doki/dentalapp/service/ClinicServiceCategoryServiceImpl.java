@@ -3,7 +3,7 @@ package com.doki.dentalapp.service;
 import com.doki.dentalapp.dto.ClinicServiceCategoryDTO;
 import com.doki.dentalapp.mapper.ServiceCategoryMapper;
 import com.doki.dentalapp.model.ClinicServiceCategory;
-import com.doki.dentalapp.repository.ClinincServiceCategoryRepository;
+import com.doki.dentalapp.repository.ClinicServiceCategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.UUID;
 @Service
 public class ClinicServiceCategoryServiceImpl implements ClinicServiceCategoryService {
 
-    private final ClinincServiceCategoryRepository repository;
+    private final ClinicServiceCategoryRepository repository;
 
-    public ClinicServiceCategoryServiceImpl(ClinincServiceCategoryRepository repository) {
+    public ClinicServiceCategoryServiceImpl(ClinicServiceCategoryRepository repository) {
         this.repository = repository;
     }
 

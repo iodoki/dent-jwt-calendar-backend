@@ -7,7 +7,7 @@ import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.model.ClinicServiceCategory;
 import com.doki.dentalapp.repository.ClinicRepository;
-import com.doki.dentalapp.repository.ClinincServiceCategoryRepository;
+import com.doki.dentalapp.repository.ClinicServiceCategoryRepository;
 import com.doki.dentalapp.repository.ClinicServiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +20,11 @@ public class ClinicServiceServiceImpl implements ClinicServiceService {
 
     private final ClinicServiceRepository clinicServiceRepository;
     private final ClinicRepository clinicRepository;
-    private final ClinincServiceCategoryRepository categoryRepository;
+    private final ClinicServiceCategoryRepository categoryRepository;
 
     public ClinicServiceServiceImpl(ClinicServiceRepository clinicServiceRepository,
                                     ClinicRepository clinicRepository,
-                                    ClinincServiceCategoryRepository categoryRepository) {
+                                    ClinicServiceCategoryRepository categoryRepository) {
         this.clinicServiceRepository = clinicServiceRepository;
         this.clinicRepository = clinicRepository;
         this.categoryRepository = categoryRepository;
