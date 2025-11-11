@@ -11,6 +11,5 @@ public record PatientDTO(
         String email,
         String phone,
         LocalDate dateOfBirth,
-        UUID clinicId,
-        UUID userId
+        UUID clinicId
 ) {}

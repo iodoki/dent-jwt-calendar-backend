@@ -9,8 +9,10 @@ import com.doki.dentalapp.model.User;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.PatientRepository;
 import com.doki.dentalapp.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,12 +21,10 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final ClinicRepository clinicRepository;
-    private final UserRepository userRepository;
 
     public PatientServiceImpl(PatientRepository patientRepository, ClinicRepository clinicRepository, UserRepository userRepository) {
         this.patientRepository = patientRepository;
         this.clinicRepository = clinicRepository;
-        this.userRepository = userRepository;
     }
 
     public List<PatientDTO> getAll() {
@@ -43,11 +43,7 @@ public class PatientServiceImpl implements PatientService {
         Clinic clinic = clinicRepository.findById(dto.clinicId())
                 .orElseThrow(() -> new RuntimeException("Clinic not found"));
 
-        User user = dto.userId() != null
-                ? userRepository.findById(dto.userId()).orElse(null)
-                : null;
-
-        Patient patient = PatientMapper.toEntity(dto, clinic, user);
+        Patient patient = PatientMapper.toEntity(dto, clinic);
         return PatientMapper.toDTO(patientRepository.save(patient));
     }
 
@@ -68,16 +64,17 @@ public class PatientServiceImpl implements PatientService {
             existing.setClinic(clinic);
         }
 
-        if (dto.userId() != null) {
-            User user = userRepository.findById(dto.userId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            existing.setUser(user);
-        }
-
         return PatientMapper.toDTO(patientRepository.save(existing));
     }
 
     public void delete(UUID id) {
         patientRepository.deleteById(id);
+    }
+
+    @Override
+    public List<PatientDTO> search(String term, Pageable pageable) {
+        return patientRepository.search(term, pageable).stream()
+                .map(PatientMapper::toDTO)
+                .toList();
     }
 }

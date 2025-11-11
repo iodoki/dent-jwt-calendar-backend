@@ -15,4 +15,6 @@ public interface ClinicServiceService {
     ClinicServiceDTO update(UUID id, ClinicServiceDTO dto);
 
     void delete(UUID id);
+
+    List<ClinicServiceDTO> getServiceByCategoryId(UUID categoryId);
 }

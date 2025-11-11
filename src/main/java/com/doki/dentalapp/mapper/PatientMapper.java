@@ -17,12 +17,11 @@ public class PatientMapper {
                 patient.getEmail(),
                 patient.getPhone(),
                 patient.getDateOfBirth(),
-                patient.getClinic() != null ? patient.getClinic().getId() : null,
-                patient.getUser() != null ? patient.getUser().getId() : null
+                patient.getClinic() != null ? patient.getClinic().getId() : null
         );
     }
 
-    public static Patient toEntity(PatientDTO dto, Clinic clinic, User user) {
+    public static Patient toEntity(PatientDTO dto, Clinic clinic) {
         return Patient.builder()
                 .id(dto.id())
                 .firstName(dto.firstName())
@@ -32,7 +31,18 @@ public class PatientMapper {
                 .phone(dto.phone())
                 .dateOfBirth(dto.dateOfBirth())
                 .clinic(clinic)
-                .user(user)
+                .build();
+    }
+
+    public static Patient toNewEntity(PatientDTO dto, Clinic clinic) {
+        return Patient.builder()
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
+                .fatherName(dto.fatherName())
+                .email(dto.email())
+                .phone(dto.phone())
+                .dateOfBirth(dto.dateOfBirth())
+                .clinic(clinic)
                 .build();
     }
 }

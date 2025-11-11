@@ -1,17 +1,18 @@
 package com.doki.dentalapp.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record AppointmentDTO(
         UUID id,
-        UUID doctorId,
-        UUID patientId,
-        UUID serviceId,
+        LocalDate date,
+        DoctorDTO doctor,
+        PatientDTO patient,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
         String status,
-        String notes,
+        String description,
         UUID clinicId
 ){}

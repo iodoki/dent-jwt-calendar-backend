@@ -22,24 +22,21 @@ public class Patient {
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user; // linked to system user if patient has login
-
     @Column(name = "dateOfBirth", nullable = false)
     private LocalDate dateOfBirth;
 
     @Column(name = "phone", length = 50, nullable = false)
     private String phone;
 
-    @Column(name = "fathername", length = 50, nullable = false)
+    @Column(name = "father_name", length = 50, nullable = false)
     private String fatherName;
 
     @Column(name = "email", length = 50, nullable = false)
     private String email;
 
+    @Builder.Default
     @Column(name = "first_name", length = 50, nullable = false)
-    private String firstName;
+    private String firstName = "defaultValue";
 
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;

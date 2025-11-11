@@ -1,7 +1,10 @@
 package com.doki.dentalapp.controller;
 
 import com.doki.dentalapp.dto.ClinicServiceDTO;
+import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.service.ClinicServiceService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +46,14 @@ public class ClinicServiceController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+
+    @GetMapping("/category")
+    public ResponseEntity<List<ClinicServiceDTO>> searchServicesByCategory(
+            @RequestParam(required = true) UUID categoryId) {
+        System.out.println("🔍 Searching service by category id: '" + categoryId + "'");
+        return ResponseEntity.ok(service.getServiceByCategoryId(categoryId));
     }
 }

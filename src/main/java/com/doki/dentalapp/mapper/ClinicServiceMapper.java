@@ -12,6 +12,7 @@ public class ClinicServiceMapper {
                 clinicService.getId(),
                 clinicService.getName(),
                 clinicService.getPrice(),
+                clinicService.getCurrency(),
                 clinicService.getClinic() != null ? clinicService.getClinic().getId() : null,
                 clinicService.getCategory() != null ? clinicService.getCategory().getId() : null,
                 clinicService.getCategory() != null ? clinicService.getCategory().getName() : null
@@ -24,6 +25,7 @@ public class ClinicServiceMapper {
         clinicService.setId(dto.id());
         clinicService.setName(dto.name());
         clinicService.setPrice(dto.price());
+        clinicService.setCurrency(dto.currency());
         clinicService.setClinic(clinic);
         clinicService.setCategory(category);
         return clinicService;

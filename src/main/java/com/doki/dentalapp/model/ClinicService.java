@@ -26,6 +26,9 @@ public class ClinicService {
     @Column(name = "price", nullable = false)
     private double price;
 
+    @Column(name = "currency", nullable = false)
+    private String currency;
+
     @ManyToOne
     @JoinColumn(name = "clinic_id", nullable = false)
     private Clinic clinic;

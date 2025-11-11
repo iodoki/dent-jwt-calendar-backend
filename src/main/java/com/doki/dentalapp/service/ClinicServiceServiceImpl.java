@@ -2,13 +2,16 @@ package com.doki.dentalapp.service;
 
 
 import com.doki.dentalapp.dto.ClinicServiceDTO;
+import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.mapper.ClinicServiceMapper;
+import com.doki.dentalapp.mapper.PatientMapper;
 import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.model.ClinicServiceCategory;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.ClinicServiceCategoryRepository;
 import com.doki.dentalapp.repository.ClinicServiceRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +49,7 @@ public class ClinicServiceServiceImpl implements ClinicServiceService {
 
     @Override
     public ClinicServiceDTO create(ClinicServiceDTO dto) {
+        //TODO: Check for clinic id
         Clinic clinic = clinicRepository.findById(dto.clinicId())
                 .orElseThrow(() -> new RuntimeException("Clinic not found"));
         ClinicServiceCategory category = categoryRepository.findById(dto.categoryId())
@@ -73,5 +77,12 @@ public class ClinicServiceServiceImpl implements ClinicServiceService {
     @Override
     public void delete(UUID id) {
         clinicServiceRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ClinicServiceDTO> getServiceByCategoryId(UUID categoryId) {
+        return clinicServiceRepository.findAllByCategoryId(categoryId).stream()
+                .map(ClinicServiceMapper::toDTO)
+                .toList();
     }
 }

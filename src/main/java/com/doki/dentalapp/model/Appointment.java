@@ -30,10 +30,6 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "service_id", nullable = false)
-    private ClinicService service;
-
     @Column(name = "start_time", nullable = false)
     private OffsetDateTime startTime;
 

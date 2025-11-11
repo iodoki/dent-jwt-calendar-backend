@@ -7,6 +7,7 @@ import com.doki.dentalapp.repository.DoctorRepository;
 import com.doki.dentalapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,6 +62,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDTO> getAllDoctors() {
         return doctorRepository.findAll().stream()
                 .map(this::mapToDTO)
+                .sorted(Comparator.comparing(DoctorDTO::firstName))
                 .collect(Collectors.toList());
     }
 

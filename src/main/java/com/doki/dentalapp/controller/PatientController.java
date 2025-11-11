@@ -2,6 +2,8 @@ package com.doki.dentalapp.controller;
 
 import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.service.PatientService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +45,15 @@ public class PatientController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         patientService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PatientDTO>> searchPatients(
+            @RequestParam(required = true) String term ,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        System.out.println("🔍 Searching patients with term: '" + term + "'");
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(patientService.search(term, pageable));
     }
 }
