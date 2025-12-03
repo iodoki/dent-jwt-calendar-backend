@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD COLUMN clinic_id UUID REFERENCES clinics (id) ON DELETE SET NULL;

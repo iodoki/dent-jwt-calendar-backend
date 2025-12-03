@@ -47,7 +47,7 @@ public class ClinicServiceImpl implements ClinicService {
         existing.setAddress(dto.address());
         existing.setPhone(dto.phone());
         existing.setEmail(dto.email());
-        existing.setNipt(dto.nipt());
+        existing.setTaxIdentity(dto.nipt());
 
         return ClinicMapper.toDTO(clinicRepository.save(existing));
     }

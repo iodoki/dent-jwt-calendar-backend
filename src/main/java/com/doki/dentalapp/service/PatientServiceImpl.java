@@ -5,27 +5,22 @@ import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.mapper.PatientMapper;
 import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.Patient;
-import com.doki.dentalapp.model.User;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.PatientRepository;
-import com.doki.dentalapp.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final ClinicRepository clinicRepository;
-
-    public PatientServiceImpl(PatientRepository patientRepository, ClinicRepository clinicRepository, UserRepository userRepository) {
-        this.patientRepository = patientRepository;
-        this.clinicRepository = clinicRepository;
-    }
 
     public List<PatientDTO> getAll() {
         return patientRepository.findAll().stream()

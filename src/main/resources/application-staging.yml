@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.zaxxer.hikari: INFO
+
+app:
+  frontend:
+    url: https://staging.dentalconnect.al
+
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 86400000
+    access-expiration-minutes: 15
+    refresh-expiration-days: 30
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

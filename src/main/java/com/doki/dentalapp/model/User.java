@@ -1,6 +1,7 @@
 
 package com.doki.dentalapp.model;
 
+import com.doki.dentalapp.util.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,9 +28,20 @@ public class User {
     @Column(name = "full_name")
     private String fullName;
 
+    //TODO: to be deleted for simplicity
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<DentalRole> dentalRoles = new HashSet<>();
+
+    @Column(name = "clinic_id")
+    private UUID clinicId;  // just store the ID, not a Clinic object
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_name")
+    private Role role;
+
+    @Column(name = "email")
+    private String email;
 }

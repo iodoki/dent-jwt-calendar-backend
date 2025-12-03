@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD COLUMN role_name VARCHAR(20);

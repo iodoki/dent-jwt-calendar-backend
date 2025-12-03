@@ -65,4 +65,13 @@ public class AppointmentController {
     ) {
         return service.findAppointmentsByDate(date);
     }
+
+    @GetMapping("/patient/{patientId}")
+    public List<AppointmentDTO> getAppointmentsByPatient(
+            @PathVariable("patientId")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            UUID patientId
+    ) {
+        return service.findAppointmentsByPatient(patientId);
+    }
 }

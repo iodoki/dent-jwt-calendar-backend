@@ -12,7 +12,7 @@ public class ClinicMapper {
                 clinic.getAddress(),
                 clinic.getPhone(),
                 clinic.getEmail(),
-                clinic.getNipt()
+                clinic.getTaxIdentity()
         );
     }
 
@@ -23,7 +23,7 @@ public class ClinicMapper {
         clinic.setAddress(dto.address());
         clinic.setPhone(dto.phone());
         clinic.setEmail(dto.email());
-        clinic.setNipt(dto.nipt());
+        clinic.setTaxIdentity(dto.nipt());
         return clinic;
     }
 }

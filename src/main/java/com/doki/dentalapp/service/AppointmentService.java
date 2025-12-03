@@ -16,4 +16,6 @@ public interface AppointmentService {
     void deleteAppointment(UUID id);
     public List<AppointmentDTO> findAppointments(LocalDate startDate, LocalDate endDate, String view);
     public List<AppointmentDTO> findAppointmentsByDate(LocalDate date);
+    public List<AppointmentDTO> findAppointmentsByPatient(UUID patientId);
+
 }

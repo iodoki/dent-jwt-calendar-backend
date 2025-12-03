@@ -135,4 +135,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(AppointmentMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<AppointmentDTO> findAppointmentsByPatient(UUID patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        return appointmentRepository.findAppointmentsByPatient(patient).stream()
+                .map(AppointmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

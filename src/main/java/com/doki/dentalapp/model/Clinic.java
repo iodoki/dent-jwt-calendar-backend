@@ -3,6 +3,7 @@ package com.doki.dentalapp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +31,10 @@ public class Clinic {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "nipt", nullable = false, length = 100)
-    private String nipt;
+    @Column(name = "tax_identity", nullable = false, length = 100)
+    private String taxIdentity;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clinic_id") // references users.clinic_id
+    private List<User> users;
 }

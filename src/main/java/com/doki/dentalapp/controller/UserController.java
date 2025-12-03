@@ -1,38 +1,63 @@
 package com.doki.dentalapp.controller;
 
-import com.doki.dentalapp.model.Role;
+import com.doki.dentalapp.dto.UserDTO;
 import com.doki.dentalapp.model.User;
 import com.doki.dentalapp.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5000")
 public class UserController {
 
-    @Autowired
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody Map<String, Object> body) {
         String username = (String) body.get("username");
         String password = (String) body.get("password");
-        List<String> roleNames = (List<String>) body.get("roles");
+        String roleName = (String) body.get("role");
 
-        User user = userService.createUser(username, password, new HashSet<>(roleNames));
+        User user = userService.createUser(username, password, roleName);
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "username", user.getUsername(),
-                "roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList())
-        ));
+                "role", user.getRole())
+        );
+    }
+
+    @GetMapping
+    public List<UserDTO> getAll() {
+        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
+        return ResponseEntity.ok(userService.create(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable UUID id, @RequestBody UserDTO dto) {
+        return ResponseEntity.ok(userService.update(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

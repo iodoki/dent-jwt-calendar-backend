@@ -1,37 +1,19 @@
 package com.doki.dentalapp.service;
 
+import com.doki.dentalapp.dto.UserDTO;
 import com.doki.dentalapp.model.User;
-import com.doki.dentalapp.model.Role;
-import com.doki.dentalapp.repository.RoleRepository;
-import com.doki.dentalapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
-@Service
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+public interface UserService {
+    public List<UserDTO> getAll();
+    public UserDTO getById(UUID id);
+    public UserDTO create(UserDTO dto);
+    public UserDTO update(UUID id, UserDTO dto);
+    public void delete(UUID id);
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    public User createUser(String username, String rawPassword, Set<String> roleNames) {
-        User user = new User();
-        user.setUsername(username);
-       // user.setPassword(passwordEncoder.encode(rawPassword)); // hash password
-         user.setPassword(rawPassword); // hash password
-
-        // assign roles
-        Set<Role> roles = roleNames.stream()
-                .map(name -> roleRepository.findByName(name)
-                        .orElseThrow(() -> new RuntimeException("Role not found: " + name)))
-                .collect(Collectors.toSet());
-
-        user.setRoles(roles);
-
-        return userRepository.save(user);
-    }
+    public UserDTO findByUsername(String username);
+    public User createUser(String username, String rawPassword, String roleName);
 }
