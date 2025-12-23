@@ -13,7 +13,9 @@ import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.ClinicServiceRepository;
 import com.doki.dentalapp.repository.DoctorRepository;
 import com.doki.dentalapp.repository.PatientRepository;
+import com.doki.dentalapp.security.MyJwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,7 +40,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDTO createAppointment(AppointmentDTO dto) {
         Doctor doctor = doctorRepository.findById(dto.doctor().id())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
-        Clinic clinic = clinicRepository.findById(UUID.fromString("64b8bb56-426c-4eb8-975e-28c0ca7d7d76"))
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+        Clinic clinic = clinicRepository.findById(UUID.fromString(auth.getClinicId()))
                 .orElseThrow(() -> new RuntimeException("Clinic not found"));
 
         Patient newPatient = Patient.
@@ -78,12 +82,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
     }
 
-    @Override
-    public List<AppointmentDTO> getAllAppointments() {
-        return appointmentRepository.findAllWithAppointmentDetails().stream()
-                .map(AppointmentMapper::toDTO)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public AppointmentDTO updateAppointment(UUID id, AppointmentDTO dto) {
@@ -92,14 +90,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Doctor doctor = doctorRepository.findById(dto.doctor().id())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
-        Patient patient = patientRepository.findById(dto.patient().id())
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        Clinic clinic = clinicRepository.findById(dto.clinicId())
-                .orElseThrow(() -> new RuntimeException("Clinic not found"));
+ //       Patient patient = patientRepository.findById(dto.patient().id())
+ //               .orElseThrow(() -> new RuntimeException("Patient not found"));
+//        Clinic clinic = clinicRepository.findById(dto.clinicId())
+//                .orElseThrow(() -> new RuntimeException("Clinic not found"));
 
         appointment.setDoctor(doctor);
-        appointment.setPatient(patient);
-        appointment.setClinic(clinic);
+       // appointment.setPatient(patient);
+      //  appointment.setClinic(clinic);
         appointment.setStartTime(dto.startTime());
         appointment.setEndTime(dto.endTime());
         appointment.setStatus(dto.status());
@@ -114,33 +112,37 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> findAppointments(LocalDate startDate, LocalDate endDate, String view) {
+    public List<AppointmentDTO> findAppointmentsByClinicAndStartEndDateBetween(LocalDate startDate, LocalDate endDate, String view) {
         if (startDate == null) startDate = LocalDate.now();
         if (endDate == null) endDate = startDate.plusMonths(1);
 
-        OffsetDateTime startTime = startDate.atStartOfDay().atOffset(ZoneOffset.UTC);
-        OffsetDateTime endTime = endDate.plusDays(1).atStartOfDay().minusSeconds(1).atOffset(ZoneOffset.UTC);
+        OffsetDateTime startDateTime = startDate.atStartOfDay().atOffset(ZoneOffset.UTC);
+        OffsetDateTime endDateTime = endDate.plusDays(1).atStartOfDay().minusSeconds(1).atOffset(ZoneOffset.UTC);
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-        return appointmentRepository.findByStartTimeBetween(startTime, endTime).stream()
+        return appointmentRepository.findByClinicIdAndStartEndTimeBetween(UUID.fromString(auth.getClinicId()), startDateTime, endDateTime).stream()
                 .map(AppointmentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<AppointmentDTO> findAppointmentsByDate(LocalDate date) {
+    public List<AppointmentDTO> findAppointmentsByClinicAndGivenDate(LocalDate date) {
         OffsetDateTime startOfDay = date.atStartOfDay().atOffset(ZoneOffset.UTC);
         OffsetDateTime endOfDay = date.plusDays(1).atStartOfDay().minusNanos(1).atOffset(ZoneOffset.UTC);
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-        return appointmentRepository.findByStartTimeBetween(startOfDay, endOfDay).stream()
+        return appointmentRepository.findByClinic_IdAndStartTimeBetween(UUID.fromString(auth.getClinicId()), startOfDay, endOfDay).stream()
                 .map(AppointmentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<AppointmentDTO> findAppointmentsByPatient(UUID patientId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        return appointmentRepository.findAppointmentsByPatient(patient).stream()
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+//        Patient patient = patientRepository.findById(patientId)
+//                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        return appointmentRepository.findAppointmentsByPatient(UUID.fromString(auth.getClinicId()), patientId).stream()
                 .map(AppointmentMapper::toDTO)
                 .collect(Collectors.toList());
     }

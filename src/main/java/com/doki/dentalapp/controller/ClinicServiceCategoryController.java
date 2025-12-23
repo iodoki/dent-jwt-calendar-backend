@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/services/categories")
-@CrossOrigin(origins = "http://localhost:5000")
 public class ClinicServiceCategoryController {
 
     private final ClinicServiceCategoryService service;
@@ -43,5 +42,12 @@ public class ClinicServiceCategoryController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/used")
+    public List<ClinicServiceCategoryDTO> getUsedCategories() {
+        System.out.println("🔍 Searching categories size by used clinic: '" + service.getCategoriesUsedByClinic().size() + "'");
+
+        return service.getCategoriesUsedByClinic();
     }
 }

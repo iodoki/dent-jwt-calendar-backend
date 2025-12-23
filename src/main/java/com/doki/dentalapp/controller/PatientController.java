@@ -56,4 +56,14 @@ public class PatientController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(patientService.search(term, pageable));
     }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<PatientDTO> getPatientHistory(@PathVariable UUID id) {
+        return ResponseEntity.ok(patientService.getById(id));
+    }
+
+    @GetMapping("/{id}/allergies")
+    public ResponseEntity<PatientDTO> getPatientAllergies(@PathVariable UUID id) {
+        return ResponseEntity.ok(patientService.getById(id));
+    }
 }

@@ -7,9 +7,10 @@ import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.Patient;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.PatientRepository;
-import lombok.AllArgsConstructor;
+import com.doki.dentalapp.security.MyJwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,7 +69,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientDTO> search(String term, Pageable pageable) {
-        return patientRepository.search(term, pageable).stream()
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+        return patientRepository.search(UUID.fromString(auth.getClinicId()), term, pageable).stream()
                 .map(PatientMapper::toDTO)
                 .toList();
     }

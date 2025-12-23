@@ -1,9 +1,12 @@
 package com.doki.dentalapp.service;
 
 import com.doki.dentalapp.dto.ClinicServiceCategoryDTO;
+import com.doki.dentalapp.mapper.ClinicServiceMapper;
 import com.doki.dentalapp.mapper.ServiceCategoryMapper;
 import com.doki.dentalapp.model.ClinicServiceCategory;
 import com.doki.dentalapp.repository.ClinicServiceCategoryRepository;
+import com.doki.dentalapp.security.MyJwtAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,4 +54,11 @@ public class ClinicServiceCategoryServiceImpl implements ClinicServiceCategorySe
     public void delete(UUID id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public List<ClinicServiceCategoryDTO> getCategoriesUsedByClinic() {
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return repository.findCategoriesUsedByClinic(UUID.fromString(auth.getClinicId())).stream()
+                .map(ServiceCategoryMapper::toDTO)
+                .toList();    }
 }

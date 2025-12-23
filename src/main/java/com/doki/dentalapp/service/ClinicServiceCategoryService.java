@@ -16,4 +16,5 @@ public interface ClinicServiceCategoryService {
     ClinicServiceCategoryDTO update(UUID id, ClinicServiceCategoryDTO dto);
 
     void delete(UUID id);
+    List<ClinicServiceCategoryDTO> getCategoriesUsedByClinic();
 }

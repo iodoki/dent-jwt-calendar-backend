@@ -2,16 +2,15 @@ package com.doki.dentalapp.service;
 
 
 import com.doki.dentalapp.dto.ClinicServiceDTO;
-import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.mapper.ClinicServiceMapper;
-import com.doki.dentalapp.mapper.PatientMapper;
 import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.model.ClinicServiceCategory;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.ClinicServiceCategoryRepository;
 import com.doki.dentalapp.repository.ClinicServiceRepository;
-import org.springframework.data.domain.Pageable;
+import com.doki.dentalapp.security.MyJwtAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,7 +80,8 @@ public class ClinicServiceServiceImpl implements ClinicServiceService {
 
     @Override
     public List<ClinicServiceDTO> getServiceByCategoryId(UUID categoryId) {
-        return clinicServiceRepository.findAllByCategoryId(categoryId).stream()
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return clinicServiceRepository.findByClinic_IdAndCategory_Id(UUID.fromString(auth.getClinicId()), categoryId).stream()
                 .map(ClinicServiceMapper::toDTO)
                 .toList();
     }

@@ -1,10 +1,13 @@
 package com.doki.dentalapp.service;
 
 import com.doki.dentalapp.dto.DoctorDTO;
+import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.model.Doctor;
 import com.doki.dentalapp.repository.ClinicRepository;
 import com.doki.dentalapp.repository.DoctorRepository;
 import com.doki.dentalapp.repository.UserRepository;
+import com.doki.dentalapp.security.MyJwtAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -60,7 +63,11 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<DoctorDTO> getAllDoctors() {
-        return doctorRepository.findAll().stream()
+        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Doctor Service getAllDoctors by clinic = " + auth.getClinicId());
+//        Clinic clinic = clinicRepository.findById(UUID.fromString(auth.getClinicId()))
+//                .orElseThrow(() -> new RuntimeException("Clinic not found"));
+        return doctorRepository.findAllByClinic_Id(UUID.fromString(auth.getClinicId())).stream()
                 .map(this::mapToDTO)
                 .sorted(Comparator.comparing(DoctorDTO::firstName))
                 .collect(Collectors.toList());

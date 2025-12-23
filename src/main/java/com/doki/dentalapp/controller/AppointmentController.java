@@ -2,7 +2,6 @@
 package com.doki.dentalapp.controller;
 
 import com.doki.dentalapp.dto.AppointmentDTO;
-import com.doki.dentalapp.model.Appointment;
 import com.doki.dentalapp.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,7 +53,7 @@ public class AppointmentController {
 
             @RequestParam(name = "view", required = false, defaultValue = "month") String view
     ) {
-        return service.findAppointments(startDate, endDate, view);
+        return service.findAppointmentsByClinicAndStartEndDateBetween(startDate, endDate, view);
     }
 
     @GetMapping("/date/{date}")
@@ -63,7 +62,7 @@ public class AppointmentController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ) {
-        return service.findAppointmentsByDate(date);
+        return service.findAppointmentsByClinicAndGivenDate(date);
     }
 
     @GetMapping("/patient/{patientId}")

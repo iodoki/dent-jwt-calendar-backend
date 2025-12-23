@@ -7,49 +7,71 @@ import com.doki.dentalapp.dto.RefreshRequest;
 import com.doki.dentalapp.dto.UserDTO;
 import com.doki.dentalapp.mapper.UserMapper;
 import com.doki.dentalapp.model.User;
+import com.doki.dentalapp.repository.UserRepository;
 import com.doki.dentalapp.service.JwtService;
 import com.doki.dentalapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.UUID;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
-
-    private final UserService userService;
-    private final JwtService jwtService;
+    private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
+    public AuthController(UserRepository userRepo, PasswordEncoder passwordEncoder, JwtService jwtService){
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
-        System.out.println("✅ Login running..."+ request.username());
-
-        UserDTO userDto = userService.findByUsername(request.username());
-
-        if (!passwordEncoder.matches(request.password(), userDto.password())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+    public ResponseEntity<?> login(@RequestBody Map<String,String> body) {
+        String username = body.get("username");
+        String password = body.get("password");
+System.out.println("Login..."+ username);
+        Optional<User> user = userRepo.findByUsername(username);
+        if (user.isEmpty() || !passwordEncoder.matches(password, user.get().getPassword())) {
+            return ResponseEntity.status(401).body(Map.of("error","Invalid credentials"));
         }
 
-        String access = jwtService.generateAccessToken(UserMapper.toEntity(userDto));
-        String refresh = jwtService.generateRefreshToken(UserMapper.toEntity(userDto));
+        String access = jwtService.generateAccessToken(user.get());
+        String refresh = jwtService.generateRefreshToken(user.get());
 
-        return new AuthResponse(access, refresh, userDto);
+        return ResponseEntity.ok(Map.of(
+                "accessToken", access,
+                "refreshToken", refresh,
+                "user", Map.of(
+                        "id", user.get().getId(),
+                        "username", user.get().getUsername(),
+                        "name", user.get().getFullName(),
+                        "email", user.get().getEmail(),
+                        "role", user.get().getRole(),
+                        "clinicId", user.get().getClinicId()
+                )
+        ));
     }
 
     @PostMapping("/refresh")
-    public AuthResponse refresh(@RequestBody RefreshRequest request) {
-
-        String userId = jwtService.validateRefreshAndGetUserId(request.refreshToken());
-        UserDTO userDTO = userService.getById(UUID.fromString(userId));
-
-        String newAccess = jwtService.generateAccessToken(UserMapper.toEntity(userDTO));
-
-        return new AuthResponse(newAccess, request.refreshToken(), userDTO);
+    public ResponseEntity<?> refresh(@RequestBody Map<String,String> body) {
+        String refreshToken = body.get("refreshToken");
+        if (refreshToken == null) return ResponseEntity.badRequest().build();
+        try {
+            var claims = jwtService.getClaims(refreshToken);
+            var userId = claims.getSubject();
+            User user = userRepo.findById(java.util.UUID.fromString(userId)).orElse(null);
+            if (user == null) return ResponseEntity.status(401).build();
+            String newAccess = jwtService.generateAccessToken(user);
+            return ResponseEntity.ok(Map.of("accessToken", newAccess));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid refresh token"));
+        }
     }
 }
