@@ -1,6 +1,7 @@
 package com.doki.dentalapp.mapper;
 
 import com.doki.dentalapp.dto.AppointmentDTO;
+import com.doki.dentalapp.dto.ClinicServiceDTO;
 import com.doki.dentalapp.dto.DoctorDTO;
 import com.doki.dentalapp.model.Appointment;
 import com.doki.dentalapp.model.Clinic;
@@ -23,8 +24,8 @@ public class AppointmentMapper {
                 appointment.getStartTime(),
                 appointment.getEndTime(),
                 appointment.getStatus(),
-                appointment.getNotes(),
-                appointment.getClinic().getId()
+                "Nan",
+                appointment.getNote()
         );
     }
 
@@ -37,7 +38,7 @@ public class AppointmentMapper {
         appointment.setStartTime(dto.startTime());
         appointment.setEndTime(dto.endTime());
         appointment.setStatus(dto.status());
-        appointment.setNotes(dto.description());
+        appointment.setNote(dto.note());
         appointment.setClinic(clinic);
         return appointment;
     }

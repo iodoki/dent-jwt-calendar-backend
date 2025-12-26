@@ -2,6 +2,7 @@ package com.doki.dentalapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.w3c.dom.Text;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -40,8 +41,8 @@ public class Appointment {
     @Column(name = "status", length = 20, nullable = false)
     private String status;
 
-    @Column(columnDefinition = "TEXT")
-    private String notes;
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String note;
 
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -53,6 +54,11 @@ public class Appointment {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
     // getters & setters
+    @Column(name = "active")
+    private Boolean active;
 }
 

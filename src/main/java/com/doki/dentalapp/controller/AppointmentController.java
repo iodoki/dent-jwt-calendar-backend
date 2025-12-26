@@ -2,6 +2,7 @@
 package com.doki.dentalapp.controller;
 
 import com.doki.dentalapp.dto.AppointmentDTO;
+import com.doki.dentalapp.dto.AppointmentNServicesDTO;
 import com.doki.dentalapp.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +22,7 @@ public class AppointmentController {
     private final AppointmentService service;
 
     @PostMapping
-    public ResponseEntity<AppointmentDTO> create(@RequestBody AppointmentDTO dto) {
+    public ResponseEntity<AppointmentNServicesDTO> create(@RequestBody AppointmentNServicesDTO dto) {
         return ResponseEntity.ok(service.createAppointment(dto));
     }
 
@@ -31,7 +32,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppointmentDTO> update(@PathVariable UUID id, @RequestBody AppointmentDTO dto) {
+    public ResponseEntity<AppointmentNServicesDTO> update(@PathVariable UUID id, @RequestBody AppointmentNServicesDTO dto) {
         return ResponseEntity.ok(service.updateAppointment(id, dto));
     }
 
@@ -44,7 +45,7 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public List<AppointmentDTO> getAppointments(
+    public List<AppointmentNServicesDTO> getAppointments(
             @RequestParam(name = "start_date", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 
@@ -65,12 +66,12 @@ public class AppointmentController {
         return service.findAppointmentsByClinicAndGivenDate(date);
     }
 
-    @GetMapping("/patient/{patientId}")
-    public List<AppointmentDTO> getAppointmentsByPatient(
-            @PathVariable("patientId")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            UUID patientId
-    ) {
-        return service.findAppointmentsByPatient(patientId);
-    }
+//    @GetMapping("/patient/{patientId}")
+//    public List<AppointmentDTO> getAppointmentsByPatient(
+//            @PathVariable("patientId")
+//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//            UUID patientId
+//    ) {
+//        return service.findAppointmentsByPatient(patientId);
+//    }
 }

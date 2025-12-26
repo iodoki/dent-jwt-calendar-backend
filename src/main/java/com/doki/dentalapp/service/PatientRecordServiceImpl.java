@@ -1,5 +1,6 @@
 package com.doki.dentalapp.service;
 import com.doki.dentalapp.dto.PatientServiceRecordDTO;
+import com.doki.dentalapp.model.Appointment;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.model.Patient;
 import com.doki.dentalapp.model.PatientServiceRecord;
@@ -20,15 +21,20 @@ public class PatientRecordServiceImpl implements PatientRecordService {
     private final PatientServiceRecordRepository recordRepository;
     private final PatientRepository patientRepository;
     private final ClinicServiceRepository serviceRepository;
+    private final HelperService helperService;
+
 
     @Override
     public PatientServiceRecordDTO createRecord(PatientServiceRecordDTO dto) {
+        //TODO: to be replaced from helperService
         Patient patient = patientRepository.findById(dto.patientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
         ClinicService service = serviceRepository.findById(dto.serviceId())
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
-        PatientServiceRecord record = PatientServiceRecordMapper.toEntity(dto, patient, service);
+        Appointment appointment = helperService.findAppointment(dto.appointmentId());
+
+        PatientServiceRecord record = PatientServiceRecordMapper.toEntity(dto, patient, service, appointment);
         return PatientServiceRecordMapper.toDTO(recordRepository.save(record));
     }
 

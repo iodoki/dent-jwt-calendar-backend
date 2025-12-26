@@ -1,5 +1,8 @@
 package com.doki.dentalapp.dto;
 
+import jakarta.validation.constraints.Size;
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -14,5 +17,6 @@ public record AppointmentDTO(
         OffsetDateTime endTime,
         String status,
         String description,
-        UUID clinicId
+        @Size(max = 10000)
+        String note
 ){}

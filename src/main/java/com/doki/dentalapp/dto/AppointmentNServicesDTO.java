@@ -1,19 +1,23 @@
 package com.doki.dentalapp.dto;
 
+import jakarta.validation.constraints.Size;
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record PatientHistoryDTO(
+public record AppointmentNServicesDTO(
         UUID id,
         String title,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
-        String description,
         LocalDate date,
         String status,
         DoctorDTO doctor,
         PatientDTO patient,
-        List<ServiceNCategoryDTO> services
-        ) {}
+        List<ServiceNCategoryDTO> services,
+        @Size(max = 10000)
+        String note
+){}

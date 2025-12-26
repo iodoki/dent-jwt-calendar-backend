@@ -33,5 +33,18 @@ public class PatientServiceRecord {
 
     @Column(name = "date", nullable = false)
     private LocalDateTime date = LocalDateTime.now();
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(name = "active")
+    private Boolean active;
 }
 

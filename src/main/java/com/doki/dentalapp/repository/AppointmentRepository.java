@@ -16,6 +16,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
                 SELECT a FROM Appointment a
                 WHERE a.clinic.id = :clinicId
                   AND a.startTime BETWEEN :startTime AND :endTime
+                  AND a.active = true
+                  ORDER BY a.startTime ASC
             """)
     List<Appointment> findByClinicIdAndStartEndTimeBetween(
             @Param("clinicId") UUID clinicId,

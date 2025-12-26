@@ -8,5 +8,6 @@ public record PatientServiceRecordDTO (
         UUID patientId,
         UUID serviceId,
         String description,
-        LocalDateTime date
+        LocalDateTime date,
+        UUID appointmentId
 ) {}

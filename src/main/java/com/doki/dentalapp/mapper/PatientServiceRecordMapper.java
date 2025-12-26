@@ -2,6 +2,7 @@ package com.doki.dentalapp.mapper;
 
 
 import com.doki.dentalapp.dto.PatientServiceRecordDTO;
+import com.doki.dentalapp.model.Appointment;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.model.Patient;
 import com.doki.dentalapp.model.PatientServiceRecord;
@@ -15,11 +16,12 @@ public class PatientServiceRecordMapper {
                 record.getPatient().getId(),
                 record.getService().getId(),
                 record.getDescription(),
-                record.getDate()
+                record.getDate(),
+                record.getAppointment().getId()
         );
     }
 
-    public static PatientServiceRecord toEntity(PatientServiceRecordDTO dto, Patient patient, ClinicService service) {
+    public static PatientServiceRecord toEntity(PatientServiceRecordDTO dto, Patient patient, ClinicService service, Appointment appointment) {
         if (dto == null) return null;
         PatientServiceRecord record = new PatientServiceRecord();
         record.setId(dto.id());
@@ -27,6 +29,7 @@ public class PatientServiceRecordMapper {
         record.setService(service);
         record.setDescription(dto.description());
         record.setDate(dto.date());
+        record.setAppointment(appointment);
         return record;
     }
 }
