@@ -37,4 +37,12 @@ public class Clinic {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "clinic_id") // references users.clinic_id
     private List<User> users;
+
+    @Column(name = "left_title", nullable = false, length = 20)
+    private String leftTitle;
+
+
+    @Column(name = "right_title", nullable = false, length = 20)
+    private String rightTitle;
+
 }

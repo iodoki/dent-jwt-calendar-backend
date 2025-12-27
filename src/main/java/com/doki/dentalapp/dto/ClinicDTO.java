@@ -8,5 +8,7 @@ public record ClinicDTO(
         String address,
         String phone,
         String email,
-        String nipt
+        String nipt,
+        String leftTitle,
+        String rightTitle
 ) {}
