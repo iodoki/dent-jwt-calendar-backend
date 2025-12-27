@@ -42,7 +42,7 @@ public class Appointment {
     private String status;
 
     @Column(name = "notes", columnDefinition = "TEXT")
-    private String note;
+    private String notes;
 
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)

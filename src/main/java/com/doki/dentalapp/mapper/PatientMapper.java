@@ -33,16 +33,4 @@ public class PatientMapper {
                 .clinic(clinic)
                 .build();
     }
-
-    public static Patient toNewEntity(PatientDTO dto, Clinic clinic) {
-        return Patient.builder()
-                .firstName(dto.firstName())
-                .lastName(dto.lastName())
-                .fatherName(dto.fatherName())
-                .email(dto.email())
-                .phone(dto.phone())
-                .dateOfBirth(dto.dateOfBirth())
-                .clinic(clinic)
-                .build();
-    }
 }

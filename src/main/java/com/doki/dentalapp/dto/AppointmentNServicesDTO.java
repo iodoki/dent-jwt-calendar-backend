@@ -19,5 +19,5 @@ public record AppointmentNServicesDTO(
         PatientDTO patient,
         List<ServiceNCategoryDTO> services,
         @Size(max = 10000)
-        String note
+        String notes
 ){}

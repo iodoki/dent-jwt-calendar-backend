@@ -21,12 +21,17 @@ public class HelperServiceImpl implements HelperService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
-    private final ClinicServiceRepository serviceRepository;
     private final ClinicRepository clinicRepository;
-    private final PatientService patientService;
     private final PatientServiceRecordRepository patientServiceRecordRepository;
     private final AppointmentPatientServiceRecordRepository appointmentPatientServiceRecordRepository;
 
+    @Override
+    public Patient findPatient(UUID patientId) {
+        return patientRepository.findById(patientId)
+                .orElseThrow(() ->
+                        new PatientNotFoundException(patientId)
+                );
+    }
     @Override
     public Doctor findDoctor(UUID doctorId) {
         return doctorRepository.findById(doctorId)
@@ -64,7 +69,7 @@ public class HelperServiceImpl implements HelperService {
                 );
     }
 
-
+//TODO:to be removed
     @Override
     public List<ServiceNCategoryDTO> getServicesNCategoriesFromAppointmentNPatientServiceRecordByAppointmentId(UUID appointmentId) {
         List<AppointmentPatientServiceRecord> appointmentRecords = appointmentPatientServiceRecordRepository.findAllByAppointment_Id(appointmentId);
@@ -81,7 +86,7 @@ public class HelperServiceImpl implements HelperService {
     }
 
     @Override
-    public List<ServiceNCategoryDTO> getServicesNCategoriesFromPatientServiceRecordByAppointmentId(UUID appointmentId) {
+    public List<ServiceNCategoryDTO> processServiceNCategoriesFromPatientServiceRecord(UUID appointmentId) {
         List<PatientServiceRecord> patientRecords = patientServiceRecordRepository.findAllByAppointment_Id(appointmentId);
 
         return patientRecords.stream()

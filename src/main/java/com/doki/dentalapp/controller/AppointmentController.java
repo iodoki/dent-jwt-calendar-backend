@@ -27,7 +27,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppointmentDTO> get(@PathVariable UUID id) {
+    public ResponseEntity<AppointmentNServicesDTO> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getAppointment(id));
     }
 
@@ -58,20 +58,11 @@ public class AppointmentController {
     }
 
     @GetMapping("/date/{date}")
-    public List<AppointmentDTO> getAppointmentsByDate(
+    public List<AppointmentNServicesDTO> getAppointmentsByDate(
             @PathVariable("date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date
     ) {
         return service.findAppointmentsByClinicAndGivenDate(date);
     }
-
-//    @GetMapping("/patient/{patientId}")
-//    public List<AppointmentDTO> getAppointmentsByPatient(
-//            @PathVariable("patientId")
-//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-//            UUID patientId
-//    ) {
-//        return service.findAppointmentsByPatient(patientId);
-//    }
 }

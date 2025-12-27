@@ -1,5 +1,7 @@
 package com.doki.dentalapp.controller;
 
+import com.doki.dentalapp.dto.AppointmentNServicesDTO;
+import com.doki.dentalapp.dto.PatientAllergyRecordDTO;
 import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.service.PatientService;
 import org.springframework.data.domain.PageRequest;
@@ -57,13 +59,20 @@ public class PatientController {
         return ResponseEntity.ok(patientService.search(term, pageable));
     }
 
-    @GetMapping("/{id}/history")
-    public ResponseEntity<PatientDTO> getPatientHistory(@PathVariable UUID id) {
-        return ResponseEntity.ok(patientService.getById(id));
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<List<AppointmentNServicesDTO>> getPatientHistory(@PathVariable UUID id) {
+        return ResponseEntity.ok(patientService.getPatientAppointmentHistory(id));
     }
 
     @GetMapping("/{id}/allergies")
-    public ResponseEntity<PatientDTO> getPatientAllergies(@PathVariable UUID id) {
-        return ResponseEntity.ok(patientService.getById(id));
+    public ResponseEntity<List<PatientAllergyRecordDTO>> getPatientAllergyHistory(@PathVariable UUID id) {
+        return ResponseEntity.ok(patientService.getPatientAllergyHistory(id));
+    }
+
+    @PutMapping("/{id}/allergies")
+    public ResponseEntity<List<PatientAllergyRecordDTO>> updatePatientAllergyHistory(@PathVariable UUID id, @RequestBody List<PatientAllergyRecordDTO> allergies) {
+        patientService.updatePatientAllergyHistory(id, allergies);
+        return ResponseEntity.ok(patientService.getPatientAllergyHistory(id));
+
     }
 }

@@ -22,7 +22,7 @@ public class AppointmentNServicesMapper {
                 DoctorMapper.toDTO(appointment.getDoctor()),
                 PatientMapper.toDTO(appointment.getPatient()),
                 serviceNCategories,
-                appointment.getNote()
+                appointment.getNotes()
                 );
     }
 }

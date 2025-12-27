@@ -8,10 +8,11 @@ import java.util.UUID;
 
 public interface HelperService {
     Clinic resolveClinicFromSecurity();
+    Patient findPatient(UUID patientId);
     Doctor findDoctor(UUID doctorId);
     Appointment findAppointment(UUID appointmentId);
     PatientServiceRecord findAppointmentPatientServiceRecord(Patient patient, UUID serviceId, UUID appointmentId);
-    List<ServiceNCategoryDTO> getServicesNCategoriesFromPatientServiceRecordByAppointmentId(UUID appointmentId);
+    List<ServiceNCategoryDTO> processServiceNCategoriesFromPatientServiceRecord(UUID appointmentId);
     List<ServiceNCategoryDTO> getServicesNCategoriesFromAppointmentNPatientServiceRecordByAppointmentId(UUID appointmentId);
 
 }

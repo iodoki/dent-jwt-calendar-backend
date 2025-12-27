@@ -1,27 +1,26 @@
 package com.doki.dentalapp.service;
 
 
-import com.doki.dentalapp.dto.PatientDTO;
-import com.doki.dentalapp.mapper.PatientMapper;
-import com.doki.dentalapp.model.Clinic;
-import com.doki.dentalapp.model.Patient;
-import com.doki.dentalapp.repository.ClinicRepository;
-import com.doki.dentalapp.repository.PatientRepository;
-import com.doki.dentalapp.security.MyJwtAuthenticationToken;
+import com.doki.dentalapp.dto.*;
+import com.doki.dentalapp.mapper.*;
+import com.doki.dentalapp.model.*;
+import com.doki.dentalapp.model.ClinicService;
+import com.doki.dentalapp.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-    private final ClinicRepository clinicRepository;
+    private final HelperService helperService;
+    private final PatientServiceRecordRepository patientServiceRecordRepository;
+    private final PatientAllergyRecordRepository patientAllergyRecordRepository;
 
     public List<PatientDTO> getAll() {
         return patientRepository.findAll().stream()
@@ -30,22 +29,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     public PatientDTO getById(UUID id) {
-        return patientRepository.findById(id)
-                .map(PatientMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        return PatientMapper.toDTO(helperService.findPatient(id));
     }
 
     public PatientDTO create(PatientDTO dto) {
-        Clinic clinic = clinicRepository.findById(dto.clinicId())
-                .orElseThrow(() -> new RuntimeException("Clinic not found"));
+        Clinic clinic = helperService.resolveClinicFromSecurity();
 
         Patient patient = PatientMapper.toEntity(dto, clinic);
         return PatientMapper.toDTO(patientRepository.save(patient));
     }
 
     public PatientDTO update(UUID id, PatientDTO dto) {
-        Patient existing = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        Clinic clinic = helperService.resolveClinicFromSecurity();
+
+        Patient existing = helperService.findPatient(id);
 
         existing.setFirstName(dto.firstName());
         existing.setLastName(dto.lastName());
@@ -53,12 +50,7 @@ public class PatientServiceImpl implements PatientService {
         existing.setEmail(dto.email());
         existing.setPhone(dto.phone());
         existing.setDateOfBirth(dto.dateOfBirth());
-
-        if (dto.clinicId() != null) {
-            Clinic clinic = clinicRepository.findById(dto.clinicId())
-                    .orElseThrow(() -> new RuntimeException("Clinic not found"));
-            existing.setClinic(clinic);
-        }
+        existing.setClinic(clinic);
 
         return PatientMapper.toDTO(patientRepository.save(existing));
     }
@@ -69,10 +61,66 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientDTO> search(String term, Pageable pageable) {
-        MyJwtAuthenticationToken auth = (MyJwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Clinic clinic = helperService.resolveClinicFromSecurity();
 
-        return patientRepository.search(UUID.fromString(auth.getClinicId()), term, pageable).stream()
+        return patientRepository.search(clinic.getId(), term, pageable).stream()
                 .map(PatientMapper::toDTO)
                 .toList();
     }
+
+    @Override
+    public List<AppointmentNServicesDTO> getPatientAppointmentHistory(UUID id) {
+        Patient patient = helperService.findPatient(id);
+
+        List<PatientServiceRecord> records = patientServiceRecordRepository.findAllByPatient_Id(patient.getId());
+        List<AppointmentNServicesDTO> appointments = new ArrayList<>();
+        records.forEach(patientServiceRecord -> {
+            Appointment appointment = patientServiceRecord.getAppointment();
+            if (appointment != null) {
+                List<ClinicService> services = patientServiceRecordRepository.findServicesByAppointmentId(appointment.getId());
+                List<ServiceNCategoryDTO> servicesNCategories = services.stream()
+                        .map(clinicService -> {
+                            return ServiceNCategoryMapper.toSlimDTO(clinicService, patientServiceRecord.getDescription());
+
+                        }).collect(Collectors.toList());
+
+                if (!appointments.contains(AppointmentNServicesMapper.toDTO(appointment, servicesNCategories))) {
+                    appointments.add(AppointmentNServicesMapper.toDTO(appointment, servicesNCategories));
+
+                }
+            }
+        });
+        return appointments;
+    }
+
+    @Override
+    public void updatePatientAllergyHistory(UUID id, List<PatientAllergyRecordDTO> allergies) {
+        Patient patient = helperService.findPatient(id);
+
+        if (patient != null) {
+            allergies
+                    .forEach(newPatientAllergyRecord ->
+                    {
+                        Optional<PatientAllergyRecord> existentPatientAllergyRecord = patientAllergyRecordRepository.findById(newPatientAllergyRecord.id());
+                        if (existentPatientAllergyRecord.isPresent()) {
+                            existentPatientAllergyRecord.get().setHasPastRecord(newPatientAllergyRecord.answer());
+                            existentPatientAllergyRecord.get().setNote(newPatientAllergyRecord.note());
+                            patientAllergyRecordRepository.save(existentPatientAllergyRecord.get());
+                        }
+
+                    });
+        }
+
+    }
+
+    @Override
+    public List<PatientAllergyRecordDTO> getPatientAllergyHistory(UUID id) {
+        Patient patient = helperService.findPatient(id);
+        List<PatientAllergyRecord> allergyRecords = patientAllergyRecordRepository.findAllByPatient_Id(patient.getId());
+
+        return allergyRecords.stream()
+                .map(PatientAllergyRecordMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 }

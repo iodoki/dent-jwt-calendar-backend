@@ -25,7 +25,7 @@ public class AppointmentMapper {
                 appointment.getEndTime(),
                 appointment.getStatus(),
                 "Nan",
-                appointment.getNote()
+                appointment.getNotes()
         );
     }
 
@@ -38,7 +38,7 @@ public class AppointmentMapper {
         appointment.setStartTime(dto.startTime());
         appointment.setEndTime(dto.endTime());
         appointment.setStatus(dto.status());
-        appointment.setNote(dto.note());
+        appointment.setNotes(dto.note());
         appointment.setClinic(clinic);
         return appointment;
     }

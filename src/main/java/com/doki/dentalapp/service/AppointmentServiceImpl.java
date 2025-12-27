@@ -1,7 +1,7 @@
 package com.doki.dentalapp.service;
 
-import com.doki.dentalapp.dto.AppointmentDTO;
 import com.doki.dentalapp.dto.AppointmentNServicesDTO;
+import com.doki.dentalapp.dto.PatientAllergyRecordDTO;
 import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.dto.ServiceNCategoryDTO;
 import com.doki.dentalapp.exeption.ClinicServiceNotFoundException;
@@ -9,10 +9,8 @@ import com.doki.dentalapp.mapper.*;
 import com.doki.dentalapp.model.*;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.repository.*;
-import com.doki.dentalapp.security.MyJwtAuthenticationToken;
 import com.doki.dentalapp.util.AppointmentStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,15 +27,12 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final DoctorRepository doctorRepository;
-    private final PatientRepository patientRepository;
     private final ClinicServiceRepository serviceRepository;
-    private final ClinicRepository clinicRepository;
     private final PatientService patientService;
     private final PatientServiceRecordRepository patientServiceRecordRepository;
-    private final AppointmentPatientServiceRecordRepository appointmentPatientServiceRecordRepository;
+    private final AllergyQuestionRepository allergyQuestionRepository;
     private final HelperService helperService;
-
+    private final PatientAllergyRecordRepository patientAllergyRecordRepository;
 
     @Override
     @Transactional
@@ -50,7 +44,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment =
                 createAndSaveAppointment(dto, clinic, doctor, patient);
-        System.out.println("-Create-> Start date: " + dto.startTime() + " End date: " + dto.endTime() + " date: " + LocalDateTime.now());
 
         List<ServiceNCategoryDTO> services =
                 handleAppointmentServices(
@@ -64,10 +57,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDTO getAppointment(UUID id) {
-        return appointmentRepository.findById(id)
-                .map(AppointmentMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    public AppointmentNServicesDTO getAppointment(UUID id) {
+        Appointment appointment = helperService.findAppointment(id);
+        List<ServiceNCategoryDTO> services = helperService.processServiceNCategoriesFromPatientServiceRecord(id);
+        return AppointmentNServicesMapper.toDTO(appointment, services);
     }
 
 
@@ -84,7 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setStartTime(dto.startTime());
         appointment.setEndTime(dto.endTime());
         appointment.setStatus(dto.status());
-        appointment.setNote(dto.note());
+        appointment.setNotes(dto.notes());
         appointment.setActive(Boolean.TRUE);
         appointment.setUpdatedAt(LocalDateTime.now());
 
@@ -123,7 +116,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentRepository.findByClinicIdAndStartEndTimeBetween(clinic.getId(), startDateTime, endDateTime).stream()
                 .map(appointment -> {
-                    List<ServiceNCategoryDTO> servicesNCategories = helperService.getServicesNCategoriesFromPatientServiceRecordByAppointmentId(appointment.getId());
+                    List<ServiceNCategoryDTO> servicesNCategories = helperService.processServiceNCategoriesFromPatientServiceRecord(appointment.getId());
                     return AppointmentNServicesMapper.toDTO(appointment, servicesNCategories);
                 })
                 .collect(Collectors.toList());
@@ -132,14 +125,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> findAppointmentsByClinicAndGivenDate(LocalDate date) {
+    public List<AppointmentNServicesDTO> findAppointmentsByClinicAndGivenDate(LocalDate date) {
         Clinic clinic = helperService.resolveClinicFromSecurity();
         OffsetDateTime startOfDay = date.atStartOfDay().atOffset(ZoneOffset.UTC);
         OffsetDateTime endOfDay = date.plusDays(1).atStartOfDay().minusNanos(1).atOffset(ZoneOffset.UTC);
 
-        return appointmentRepository.findByClinic_IdAndStartTimeBetween(clinic.getId(), startOfDay, endOfDay).stream()
-                .map(AppointmentMapper::toDTO)
-                .collect(Collectors.toList());
+        return appointmentRepository.findByClinicIdAndStartEndTimeBetween(clinic.getId(), startOfDay, endOfDay).stream()
+                .map(appointment -> {
+                    List<ServiceNCategoryDTO> servicesNCategories = helperService.processServiceNCategoriesFromPatientServiceRecord(appointment.getId());
+                    return AppointmentNServicesMapper.toDTO(appointment, servicesNCategories);
+                }).collect(Collectors.toList());
     }
 
     public List<ServiceNCategoryDTO> handleAppointmentServices(
@@ -200,9 +195,16 @@ public class AppointmentServiceImpl implements AppointmentService {
             Clinic clinic
     ) {
 
+        List<AllergyQuestion> questions = allergyQuestionRepository.findAllByClinic_Id(clinic.getId());
+
         if (patientDTO.id() != null) {
             PatientDTO updated =
                     patientService.update(patientDTO.id(), patientDTO);
+
+            List<PatientAllergyRecord> patientAllergies = patientAllergyRecordRepository.findAllByPatient_Id(clinic.getId());
+            if (patientAllergies.isEmpty()) {
+                createAndSavePatientAllergyRecords(PatientMapper.toEntity(updated, clinic), questions);
+            }
 
             return PatientMapper.toEntity(updated, clinic);
         }
@@ -220,8 +222,26 @@ public class AppointmentServiceImpl implements AppointmentService {
         PatientDTO created =
                 patientService.create(PatientMapper.toDTO(newPatient));
 
+        createAndSavePatientAllergyRecords(PatientMapper.toEntity(created, clinic), questions);
+
         return PatientMapper.toEntity(created, clinic);
     }
+
+    private void createAndSavePatientAllergyRecords(Patient patient, List<AllergyQuestion> questions) {
+        questions
+                .forEach(question -> {
+                    PatientAllergyRecord patientAllergyRecord = PatientAllergyRecord.builder()
+                            .patient(patient)
+                            .allergyQuestion(question)
+                            .hasPastRecord(false)
+                            .note("")
+                            .build();
+                    patientAllergyRecordRepository.save(patientAllergyRecord);
+
+                });
+
+    }
+
 
     private Appointment createAndSaveAppointment(
             AppointmentNServicesDTO dto,
@@ -237,7 +257,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .patient(patient)
                 .doctor(doctor)
                 .clinic(clinic)
-                .note(dto.note())
+                .notes(dto.notes())
                 .status(AppointmentStatus.SCHEDULED.name())
                 .createdAt(LocalDateTime.now())
                 .active(Boolean.TRUE)
