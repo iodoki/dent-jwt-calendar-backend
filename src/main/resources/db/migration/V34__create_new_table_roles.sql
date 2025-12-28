@@ -1,4 +1,4 @@
-DROP TABLE dent_roles;
+DROP TABLE IF EXISTS dent_roles CASCADE;
 
 
 CREATE TABLE if not exists roles (
