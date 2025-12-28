@@ -52,7 +52,8 @@ logging:
 app:
   frontend:
     url: ${ALLOWED_ORIGINS}
-  jwt:
+
+jwt:
     secret: ${JWT_SECRET}
     expiration-ms: 86400000
     access-expiration-minutes: 15
