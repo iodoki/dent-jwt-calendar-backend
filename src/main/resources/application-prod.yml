@@ -29,6 +29,14 @@ spring:
           lob:
             non_contextual_creation: true
         format_sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    fail-on-unsupported-database: false
+    validate-on-migrate: true
+    out-of-order: false
+
 
   jackson:
     serialization:
