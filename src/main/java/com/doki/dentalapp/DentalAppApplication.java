@@ -14,6 +14,8 @@ import com.doki.dentalapp.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
 
 @SpringBootApplication

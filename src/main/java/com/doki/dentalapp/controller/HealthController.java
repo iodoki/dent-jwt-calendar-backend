@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5000")
 public class HealthController {
 
     @GetMapping("/health")

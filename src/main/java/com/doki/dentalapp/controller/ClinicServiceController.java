@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:5000")
 public class ClinicServiceController {
 
     private final ClinicServiceService service;

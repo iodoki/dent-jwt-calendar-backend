@@ -12,7 +12,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/clinic-users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5000")
 public class ClinicUserController {
 
     private final ClinicUserService service;

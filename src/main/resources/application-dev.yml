@@ -33,7 +33,7 @@ jwt:
   refresh-expiration-days: 30
 
 cors:
-  allowed-origin: "http://localhost:5000"
+  allowed-origins: "http://localhost:5000"
 
 server:
   port: 8080

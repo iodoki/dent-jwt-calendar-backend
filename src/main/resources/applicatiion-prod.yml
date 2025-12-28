@@ -6,9 +6,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -37,7 +37,7 @@ spring:
 
   web:
     cors:
-      allowed-origins: ${app.frontend.url}
+      allowed-origins: ${ALLOWED_ORIGINS}
       allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
       allowed-headers: "*"
       allow-credentials: true
@@ -51,7 +51,7 @@ logging:
 
 app:
   frontend:
-    url: https://dentalconnect.al
+    url: ${ALLOWED_ORIGINS}
   jwt:
     secret: ${JWT_SECRET}
     expiration: 86400000
