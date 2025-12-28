@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "dent_roles")
+@Table(name = "roles")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class DentalRole {
     @Id
