@@ -1,7 +1,7 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/dentalconnectDB
+    url: jdbc:postgresql://localhost:5432/connectDB
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -19,6 +19,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     fail-on-unsupported-database: false
+    repair: true
 
 
 
@@ -36,4 +37,4 @@ cors:
   allowed-origins: "http://localhost:5000"
 
 server:
-  port: 8080
+  port: 8181

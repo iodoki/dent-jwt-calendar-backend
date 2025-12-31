@@ -3,35 +3,35 @@ version: '3.8'
 services:
   db:
     image: postgres:17
-    container_name: dental-postgres
+    container_name: connect-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: dentalconnectDB
+      POSTGRES_DB: connectDB
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - dentalnet
+      - connectnet
 
   backend:
     build: .
-    container_name: dental-backend
+    container_name: connect-backend
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dentalconnectDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/connectDB
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       - db
     networks:
-      - dentalnet
+      - connectnet
 
 networks:
-  dentalnet:
+  connectnet:
 
 volumes:
   pgdata:
