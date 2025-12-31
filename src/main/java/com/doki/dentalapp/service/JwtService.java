@@ -20,13 +20,13 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
+    @Value("${app.jwt.secret}")
     private String secret;
 
-    @Value("${jwt.access-expiration-minutes}")
+    @Value("${app.jwt.access-expiration-minutes}")
     private long accessMinutes;
 
-    @Value("${jwt.refresh-expiration-days}")
+    @Value("${app.jwt.refresh-expiration-days}")
     private long refreshDays;
 
     private Key getKey() {
