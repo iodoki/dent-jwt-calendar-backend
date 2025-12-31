@@ -24,7 +24,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${cors.allowed-origins}")
+    @Value("${spring.web.cors.allowed-origins}")
     private List<String> allowedOrigins;
 
     private final JwtAuthFilter jwtAuthFilter;
