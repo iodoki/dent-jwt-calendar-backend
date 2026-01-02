@@ -21,7 +21,6 @@ public interface PatientServiceRecordRepository extends JpaRepository<PatientSer
     @Query("""
                 SELECT ps.service
                 JOIN FETCH ps.patient
-                JOIN FETCH ps.appointment
                 FROM PatientServiceRecord ps
                 WHERE ps.appointment.id = :appointmentId
             """)
