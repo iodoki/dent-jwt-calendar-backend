@@ -19,9 +19,11 @@ public interface PatientServiceRecordRepository extends JpaRepository<PatientSer
     List<PatientServiceRecord> findAllByAppointment_IdAndPatient_Id(UUID appointmentId, UUID patientId);
 
     @Query("""
-                select ps.service
-                from PatientServiceRecord ps
-                where ps.appointment.id = :appointmentId
+                SELECT ps.service
+                JOIN FETCH ps.patient
+                JOIN FETCH ps.appointment
+                FROM PatientServiceRecord ps
+                WHERE ps.appointment.id = :appointmentId
             """)
     List<ClinicService> findServicesByAppointmentId(UUID appointmentId);
 }
