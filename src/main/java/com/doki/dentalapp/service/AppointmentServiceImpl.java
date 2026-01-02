@@ -106,6 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AppointmentNServicesDTO> findAppointmentsByClinicAndStartEndDateBetween(LocalDate startDate, LocalDate endDate, String view) {
         if (startDate == null) startDate = LocalDate.now();
         if (endDate == null) endDate = startDate.plusMonths(1);
