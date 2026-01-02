@@ -14,7 +14,7 @@ public class AppointmentNServicesMapper {
         if (appointment == null) return null;
         return new AppointmentNServicesDTO(
                 appointment.getId(),
-                appointment.getPatient().getFirstName() + " "+ appointment.getPatient().getLastName(),
+               // appointment.getPatient().getFirstName() + " "+ appointment.getPatient().getLastName(),
                 appointment.getStartTime(),
                 appointment.getEndTime(),
                 appointment.getStartTime().toLocalDate(),

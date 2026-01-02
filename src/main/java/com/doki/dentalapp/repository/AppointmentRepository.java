@@ -24,6 +24,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime
     );
+
+
+    @Query("""
+            SELECT a FROM Appointment a 
+            JOIN FETCH a.patient 
+            WHERE a.clinic.id = :clinicId AND a.startTime BETWEEN :start AND :end
+            """)
+    List<Appointment> findAppointmentsWithPatient(@Param("clinicId") UUID clinicId, @Param("start") OffsetDateTime start, @Param("end") OffsetDateTime end);
+
+
     @Query("""
                 SELECT a FROM Appointment a
                 WHERE a.clinic.id = :clinicId
@@ -37,9 +47,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     List<Appointment> findByStartTimeBetween(OffsetDateTime startTime, OffsetDateTime endTime);
 
-   // List<Appointment> findAppointmentsByPatient(Patient patient);
+    // List<Appointment> findAppointmentsByPatient(Patient patient);
 
     List<Appointment> findByClinic_IdAndStartTimeBetween(UUID clinicId, OffsetDateTime startTime, OffsetDateTime endTime);
-
 
 }

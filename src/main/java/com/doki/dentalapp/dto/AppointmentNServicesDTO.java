@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public record AppointmentNServicesDTO(
         UUID id,
-        String title,
+      //  String title,
         OffsetDateTime startTime,
         OffsetDateTime endTime,
         LocalDate date,

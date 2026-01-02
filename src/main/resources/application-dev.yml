@@ -21,20 +21,26 @@ spring:
     fail-on-unsupported-database: false
     repair: true
 
+  web:
+    cors:
+      allowed-origins: http://localhost:5173/
+      allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+
 
 
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-jwt:
-  # In production override JWT secret with environment variable JWT_SECRET
- # secret: "${JWT_SECRET:change-this-secret-please-update}"
-  expiration-ms: 86400000
-  secret: "3Fks7eP0cX9LlQa8Jw92ZmDK4HBt6RNs"
-  access-expiration-minutes: 15
-  refresh-expiration-days: 30
 
-cors:
-  allowed-origins: "http://localhost:5000"
+app:
+  frontend:
+    url: http://localhost:5173/
+  jwt:
+    secret: 3Fks7eP0cX9LlQa8Jw92ZmDK4HBt6RNs
+    expiration-ms: 86400000
+    access-expiration-minutes: 15
+    refresh-expiration-days: 30
 
 server:
   port: 8181
