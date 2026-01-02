@@ -14,6 +14,7 @@ import java.util.UUID;
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
     @Query("""
                 SELECT a FROM Appointment a
+                JOIN FETCH a.patient
                 WHERE a.clinic.id = :clinicId
                   AND a.startTime BETWEEN :startTime AND :endTime
                   AND a.active = true
@@ -24,15 +25,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime
     );
-
-
-    @Query("""
-            SELECT a FROM Appointment a 
-            JOIN FETCH a.patient 
-            WHERE a.clinic.id = :clinicId AND a.startTime BETWEEN :start AND :end
-            """)
-    List<Appointment> findAppointmentsWithPatient(@Param("clinicId") UUID clinicId, @Param("start") OffsetDateTime start, @Param("end") OffsetDateTime end);
-
 
     @Query("""
                 SELECT a FROM Appointment a
