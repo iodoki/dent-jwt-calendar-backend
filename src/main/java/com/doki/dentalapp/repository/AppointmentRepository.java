@@ -15,6 +15,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("""
                 SELECT a FROM Appointment a
                 JOIN FETCH a.patient
+                JOIN FETCH a.doctor
                 WHERE a.clinic.id = :clinicId
                   AND a.startTime BETWEEN :startTime AND :endTime
                   AND a.active = true
