@@ -6,12 +6,14 @@ import com.doki.dentalapp.mapper.*;
 import com.doki.dentalapp.model.*;
 import com.doki.dentalapp.model.ClinicService;
 import com.doki.dentalapp.repository.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -22,6 +24,8 @@ public class PatientServiceImpl implements PatientService {
     private final HelperService helperService;
     private final PatientServiceRecordRepository patientServiceRecordRepository;
     private final PatientAllergyRecordRepository patientAllergyRecordRepository;
+    private final AllergyQuestionRepository allergyQuestionRepository;
+    private final EntityManager entityManager;
 
     public List<PatientDTO> getAll() {
         return patientRepository.findAll().stream()
@@ -97,21 +101,30 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void updatePatientAllergyHistory(UUID id, List<PatientAllergyRecordDTO> allergies) {
-        Patient patient = helperService.findPatient(id);
+        System.out.println("updatePatientAllergyHistory... : " + id + " " + allergies.size());
 
-        if (patient != null) {
-            allergies
-                    .forEach(newPatientAllergyRecord ->
-                    {
-                        Optional<PatientAllergyRecord> existentPatientAllergyRecord = patientAllergyRecordRepository.findById(newPatientAllergyRecord.id());
-                        if (existentPatientAllergyRecord.isPresent()) {
-                            existentPatientAllergyRecord.get().setHasPastRecord(newPatientAllergyRecord.answer());
-                            existentPatientAllergyRecord.get().setNote(newPatientAllergyRecord.note());
-                            patientAllergyRecordRepository.save(existentPatientAllergyRecord.get());
-                        }
+        allergies.forEach(patientAllergyRecord -> {
+            System.out.println(patientAllergyRecord.id());
+            System.out.println(patientAllergyRecord.questionId());
+            System.out.println(patientAllergyRecord.question());
 
-                    });
-        }
+            System.out.println(patientAllergyRecord.answer());
+            System.out.println(patientAllergyRecord.note());
+
+
+
+            if (id != null && patientAllergyRecord.questionId() != null) {
+                System.out.println("updatePatientAllergyHistory : " + id + " " + patientAllergyRecord.questionId());
+
+                Patient patient = helperService.findPatient(id);
+                AllergyQuestion question = helperService.findQuestion(patientAllergyRecord.questionId());
+                upsert(
+                        patient,
+                        question,
+                        patientAllergyRecord.answer(),
+                        patientAllergyRecord.note());
+            }
+        });
 
     }
 
@@ -123,6 +136,45 @@ public class PatientServiceImpl implements PatientService {
         return allergyRecords.stream()
                 .map(PatientAllergyRecordMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeDuplicateAllergies(UUID patientId) {
+        List<PatientAllergyRecord> allergies = patientAllergyRecordRepository.findAllByPatient_Id(patientId);
+
+        Map<String, PatientAllergyRecord> unique = new HashMap<>();
+        List<PatientAllergyRecord> duplicates = new ArrayList<>();
+
+        for (PatientAllergyRecord allergy : allergies) {
+            String key = allergy.getAllergyQuestion().getId().toString();
+
+            if (!unique.containsKey(key)) {
+                unique.put(key, allergy);
+            } else {
+                duplicates.add(allergy);
+            }
+        }
+
+        patientAllergyRecordRepository.deleteAll(duplicates);
+    }
+
+    public void upsert(Patient patient, AllergyQuestion question, Boolean hasPast, String note) {
+
+        PatientAllergyRecord record = patientAllergyRecordRepository
+                .findByPatient_IdAndAllergyQuestion_Id(patient.getId(), question.getId())
+                .orElseGet(() -> {
+                    PatientAllergyRecord newRecord = new PatientAllergyRecord();
+                    newRecord.setPatient(patient);
+                    newRecord.setAllergyQuestion(question);
+                    System.out.println("upsert new record: " + newRecord.getId() + newRecord.getAllergyQuestion().getId() + newRecord.getNote());
+                    return newRecord;
+                });
+
+        // ✅ ONLY update the fields you want
+        System.out.println("upsert record: " + record.getId() + record.getAllergyQuestion().getId() + record.getNote());
+        record.setHasPastRecord(hasPast);
+        record.setNote(note);
+        patientAllergyRecordRepository.save(record);
     }
 
 }

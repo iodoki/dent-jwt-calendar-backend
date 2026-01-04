@@ -65,13 +65,15 @@ public class PatientController {
 
     @GetMapping("/{id}/allergies")
     public ResponseEntity<List<PatientAllergyRecordDTO>> getPatientAllergyHistory(@PathVariable UUID id) {
+        System.out.println("Patient Controller: ...GET");
         return ResponseEntity.ok(patientService.getPatientAllergyHistory(id));
     }
 
     @PutMapping("/{id}/allergies")
-    public ResponseEntity<List<PatientAllergyRecordDTO>> updatePatientAllergyHistory(@PathVariable UUID id, @RequestBody List<PatientAllergyRecordDTO> allergies) {
+    public void updatePatientAllergyHistory(@PathVariable UUID id, @RequestBody List<PatientAllergyRecordDTO> allergies) {
         patientService.updatePatientAllergyHistory(id, allergies);
-        return ResponseEntity.ok(patientService.getPatientAllergyHistory(id));
+        System.out.println("Patient Controller: ...PUT");
+       // return ResponseEntity.ok(patientService.getPatientAllergyHistory(id));
 
     }
 }

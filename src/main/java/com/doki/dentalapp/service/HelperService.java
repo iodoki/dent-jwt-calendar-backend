@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface HelperService {
+    AllergyQuestion findQuestion(UUID questionId);
     Clinic resolveClinicFromSecurity();
     Patient findPatient(UUID patientId);
     Doctor findDoctor(UUID doctorId);

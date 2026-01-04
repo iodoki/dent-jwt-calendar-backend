@@ -23,7 +23,7 @@ spring:
 
   web:
     cors:
-      allowed-origins: http://localhost:5173/
+      allowed-origins: http://localhost:5000
       allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
       allowed-headers: "*"
       allow-credentials: true
@@ -35,7 +35,7 @@ spring:
 
 app:
   frontend:
-    url: http://localhost:5173/
+    url: http://localhost:5000
   jwt:
     secret: 3Fks7eP0cX9LlQa8Jw92ZmDK4HBt6RNs
     expiration-ms: 86400000

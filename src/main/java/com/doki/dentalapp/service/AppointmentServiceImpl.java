@@ -1,7 +1,6 @@
 package com.doki.dentalapp.service;
 
 import com.doki.dentalapp.dto.AppointmentNServicesDTO;
-import com.doki.dentalapp.dto.PatientAllergyRecordDTO;
 import com.doki.dentalapp.dto.PatientDTO;
 import com.doki.dentalapp.dto.ServiceNCategoryDTO;
 import com.doki.dentalapp.exeption.ClinicServiceNotFoundException;
@@ -196,17 +195,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             Clinic clinic
     ) {
 
-        List<AllergyQuestion> questions = allergyQuestionRepository.findAllByClinic_Id(clinic.getId());
-
         if (patientDTO.id() != null) {
             PatientDTO updated =
                     patientService.update(patientDTO.id(), patientDTO);
-
-            List<PatientAllergyRecord> patientAllergies = patientAllergyRecordRepository.findAllByPatient_Id(clinic.getId());
-            if (patientAllergies.isEmpty()) {
-                createAndSavePatientAllergyRecords(PatientMapper.toEntity(updated, clinic), questions);
-            }
-
             return PatientMapper.toEntity(updated, clinic);
         }
 
@@ -223,25 +214,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         PatientDTO created =
                 patientService.create(PatientMapper.toDTO(newPatient));
 
-        createAndSavePatientAllergyRecords(PatientMapper.toEntity(created, clinic), questions);
+        List<AllergyQuestion> clinicQuestions = allergyQuestionRepository.findAllByClinic_Id(clinic.getId());
+        newPatientAllergyRecords(PatientMapper.toEntity(created, clinic), clinicQuestions);
 
         return PatientMapper.toEntity(created, clinic);
     }
 
-    private void createAndSavePatientAllergyRecords(Patient patient, List<AllergyQuestion> questions) {
-        questions
-                .forEach(question -> {
-                    PatientAllergyRecord patientAllergyRecord = PatientAllergyRecord.builder()
-                            .patient(patient)
-                            .allergyQuestion(question)
-                            .hasPastRecord(false)
-                            .note("")
-                            .build();
-                    patientAllergyRecordRepository.save(patientAllergyRecord);
+    private void newPatientAllergyRecords(Patient patient, List<AllergyQuestion> questions) {
+        List<PatientAllergyRecord> existingPatientAllergies = patientAllergyRecordRepository.findAllByPatient_Id(patient.getId());
+        if (existingPatientAllergies.isEmpty()) {
+            questions
+                    .forEach(question -> {
+                        PatientAllergyRecord patientAllergyRecord = PatientAllergyRecord.builder()
+                                .patient(patient)
+                                .allergyQuestion(question)
+                                .hasPastRecord(false)
+                                .note("")
+                                .build();
+                        patientAllergyRecordRepository.save(patientAllergyRecord);
 
-                });
+                    });
 
+        }
     }
+
 
 
     private Appointment createAndSaveAppointment(

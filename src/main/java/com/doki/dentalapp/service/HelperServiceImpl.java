@@ -24,7 +24,15 @@ public class HelperServiceImpl implements HelperService {
     private final ClinicRepository clinicRepository;
     private final PatientServiceRecordRepository patientServiceRecordRepository;
     private final AppointmentPatientServiceRecordRepository appointmentPatientServiceRecordRepository;
+    private final AllergyQuestionRepository allergyQuestionRepository;
 
+    @Override
+    public AllergyQuestion findQuestion(UUID questionId) {
+        return allergyQuestionRepository.findById(questionId)
+                .orElseThrow(() ->
+                        new AllergyQuestionNotFoundException(questionId)
+                );
+    }
     @Override
     public Patient findPatient(UUID patientId) {
         return patientRepository.findById(patientId)
