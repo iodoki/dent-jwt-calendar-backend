@@ -17,4 +17,6 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     ( LOWER(p.firstName) LIKE LOWER(CONCAT('%', :term, '%'))
        OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :term, '%')) )
 """)    List<Patient> search(@Param("clinicId") UUID clinicId, @Param("term") String term, Pageable pageable);
+
+    List<Patient> findAllByClinic_Id(UUID clinicId);
 }

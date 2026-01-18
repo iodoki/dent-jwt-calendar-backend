@@ -1,7 +1,6 @@
 package com.doki.dentalapp.dto;
 
 import jakarta.validation.constraints.Size;
-import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -19,5 +18,7 @@ public record AppointmentNServicesDTO(
         PatientDTO patient,
         List<ServiceNCategoryDTO> services,
         @Size(max = 10000)
-        String notes
+        String notes,
+        PaymentDTO paymentDTO
+
 ){}

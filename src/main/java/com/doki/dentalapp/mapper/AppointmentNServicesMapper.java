@@ -2,6 +2,7 @@ package com.doki.dentalapp.mapper;
 
 import com.doki.dentalapp.dto.AppointmentDTO;
 import com.doki.dentalapp.dto.AppointmentNServicesDTO;
+import com.doki.dentalapp.dto.PaymentDTO;
 import com.doki.dentalapp.dto.ServiceNCategoryDTO;
 import com.doki.dentalapp.model.*;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class AppointmentNServicesMapper {
 
-    public static AppointmentNServicesDTO toDTO(Appointment appointment, List<ServiceNCategoryDTO> serviceNCategories) {
+    public static AppointmentNServicesDTO toDTO(Appointment appointment, List<ServiceNCategoryDTO> serviceNCategories, PaymentDTO paymentDTO) {
         if (appointment == null) return null;
         return new AppointmentNServicesDTO(
                 appointment.getId(),
@@ -22,7 +23,8 @@ public class AppointmentNServicesMapper {
                 DoctorMapper.toDTO(appointment.getDoctor()),
                 PatientMapper.toDTO(appointment.getPatient()),
                 serviceNCategories,
-                appointment.getNotes()
+                appointment.getNotes(),
+                paymentDTO
                 );
     }
 }

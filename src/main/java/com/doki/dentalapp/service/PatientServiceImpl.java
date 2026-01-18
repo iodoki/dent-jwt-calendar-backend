@@ -25,10 +25,11 @@ public class PatientServiceImpl implements PatientService {
     private final PatientServiceRecordRepository patientServiceRecordRepository;
     private final PatientAllergyRecordRepository patientAllergyRecordRepository;
     private final AllergyQuestionRepository allergyQuestionRepository;
-    private final EntityManager entityManager;
 
     public List<PatientDTO> getAll() {
-        return patientRepository.findAll().stream()
+        Clinic clinic = helperService.resolveClinicFromSecurity();
+
+        return patientRepository.findAllByClinic_Id(clinic.getId()).stream()
                 .map(PatientMapper::toDTO)
                 .toList();
     }
@@ -90,8 +91,14 @@ public class PatientServiceImpl implements PatientService {
 
                         }).collect(Collectors.toList());
 
-                if (!appointments.contains(AppointmentNServicesMapper.toDTO(appointment, servicesNCategories))) {
-                    appointments.add(AppointmentNServicesMapper.toDTO(appointment, servicesNCategories));
+                if (!appointments.contains(AppointmentNServicesMapper.toDTO(
+                        appointment,
+                        servicesNCategories,
+                        new PaymentDTO(0.0,0.0, 0.0,false)))) {
+                    appointments.add(AppointmentNServicesMapper.toDTO(
+                            appointment,
+                            servicesNCategories,
+                    new PaymentDTO(0.0,0.0, 0.0,false)));
 
                 }
             }

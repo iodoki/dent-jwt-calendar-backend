@@ -4,6 +4,7 @@ import com.doki.dentalapp.dto.ClinicDTO;
 import com.doki.dentalapp.mapper.ClinicMapper;
 import com.doki.dentalapp.model.Clinic;
 import com.doki.dentalapp.repository.ClinicRepository;
+import com.doki.dentalapp.repository.PatientAllergyRecordRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

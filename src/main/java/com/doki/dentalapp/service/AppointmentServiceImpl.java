@@ -2,6 +2,7 @@ package com.doki.dentalapp.service;
 
 import com.doki.dentalapp.dto.AppointmentNServicesDTO;
 import com.doki.dentalapp.dto.PatientDTO;
+import com.doki.dentalapp.dto.PaymentDTO;
 import com.doki.dentalapp.dto.ServiceNCategoryDTO;
 import com.doki.dentalapp.exeption.ClinicServiceNotFoundException;
 import com.doki.dentalapp.mapper.*;
@@ -30,8 +31,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PatientService patientService;
     private final PatientServiceRecordRepository patientServiceRecordRepository;
     private final AllergyQuestionRepository allergyQuestionRepository;
-    private final HelperService helperService;
-    private final PatientAllergyRecordRepository patientAllergyRecordRepository;
+    private final HelperService helperService;private final PatientAllergyRecordRepository patientAllergyRecordRepository;
 
     @Override
     @Transactional
@@ -52,14 +52,20 @@ public class AppointmentServiceImpl implements AppointmentService {
                         "OnCreate"
                 );
 
-        return AppointmentNServicesMapper.toDTO(appointment, services);
+        Double totalServiceAmount = services.stream()
+                .mapToDouble(service -> service.service().price())
+                .sum();
+        return AppointmentNServicesMapper.toDTO(appointment, services, new PaymentDTO(totalServiceAmount, 0.0, 0.0, false));
     }
 
     @Override
     public AppointmentNServicesDTO getAppointment(UUID id) {
         Appointment appointment = helperService.findAppointment(id);
         List<ServiceNCategoryDTO> services = helperService.processServiceNCategoriesFromPatientServiceRecord(id);
-        return AppointmentNServicesMapper.toDTO(appointment, services);
+        return AppointmentNServicesMapper.toDTO(
+                appointment,
+                services,
+                new PaymentDTO(0.0,0.0, 0.0,false));
     }
 
 
@@ -88,7 +94,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                         "NaN"
                 );
 
-        return AppointmentNServicesMapper.toDTO(appointment, services);
+        return AppointmentNServicesMapper.toDTO(
+                appointment,
+                services,
+                new PaymentDTO(0.0,0.0, 0.0,false));
     }
 
     @Override
@@ -117,7 +126,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByClinicIdAndStartEndTimeBetween(clinic.getId(), startDateTime, endDateTime).stream()
                 .map(appointment -> {
                     List<ServiceNCategoryDTO> servicesNCategories = helperService.processServiceNCategoriesFromPatientServiceRecord(appointment.getId());
-                    return AppointmentNServicesMapper.toDTO(appointment, servicesNCategories);
+                    return AppointmentNServicesMapper.toDTO(
+                            appointment,
+                            servicesNCategories,
+                            new PaymentDTO(0.0,0.0, 0.0,false));
                 })
                 .collect(Collectors.toList());
 
@@ -133,7 +145,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByClinicIdAndStartEndTimeBetween(clinic.getId(), startOfDay, endOfDay).stream()
                 .map(appointment -> {
                     List<ServiceNCategoryDTO> servicesNCategories = helperService.processServiceNCategoriesFromPatientServiceRecord(appointment.getId());
-                    return AppointmentNServicesMapper.toDTO(appointment, servicesNCategories);
+                    return AppointmentNServicesMapper.toDTO(
+                            appointment,
+                            servicesNCategories,
+                    new PaymentDTO(0.0,0.0, 0.0,false));
                 }).collect(Collectors.toList());
     }
 
@@ -198,6 +213,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (patientDTO.id() != null) {
             PatientDTO updated =
                     patientService.update(patientDTO.id(), patientDTO);
+            System.out.println("Update patient..");
+
             return PatientMapper.toEntity(updated, clinic);
         }
 
@@ -213,6 +230,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         PatientDTO created =
                 patientService.create(PatientMapper.toDTO(newPatient));
+        System.out.println("Create patient..");
 
         List<AllergyQuestion> clinicQuestions = allergyQuestionRepository.findAllByClinic_Id(clinic.getId());
         newPatientAllergyRecords(PatientMapper.toEntity(created, clinic), clinicQuestions);
