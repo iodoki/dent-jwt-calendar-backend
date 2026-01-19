@@ -12,11 +12,18 @@ import java.util.UUID;
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
     @Query("""
-    SELECT p FROM Patient p
-    WHERE p.clinic.id = :clinicId AND
-    ( LOWER(p.firstName) LIKE LOWER(CONCAT('%', :term, '%'))
-       OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :term, '%')) )
-""")    List<Patient> search(@Param("clinicId") UUID clinicId, @Param("term") String term, Pageable pageable);
+                SELECT p FROM Patient p
+                WHERE p.clinic.id = :clinicId AND p.active = true AND
+                ( LOWER(p.firstName) LIKE LOWER(CONCAT('%', :term, '%'))
+                   OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :term, '%')) )
+            """)
+    List<Patient> search(@Param("clinicId") UUID clinicId, @Param("term") String term, Pageable pageable);
+
+    @Query("""
+                SELECT p FROM Patient p
+                WHERE p.clinic.id = :clinicId AND p.active = true
+            """)
+    List<Patient> findAllActiveByClinic_Id(@Param("clinicId") UUID clinicId);
 
     List<Patient> findAllByClinic_Id(UUID clinicId);
 }

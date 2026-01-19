@@ -11,5 +11,11 @@ public record PatientDTO(
         String email,
         String phone,
         LocalDate dateOfBirth,
+        Boolean active,
+        String gender,
+        String profession,
+        String address,
+        String identityNumber,
+        String healthCareNumber,
         UUID clinicId
 ) {}

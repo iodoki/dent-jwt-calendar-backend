@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -48,6 +49,29 @@ public class Patient {
     @JoinColumn(name = "clinic_id", nullable = false)
     private Clinic clinic;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+    // getters & setters
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(name = "gender", length = 50, nullable = false)
+    private String gender;
+
+    @Column(name = "profession", length = 50, nullable = false)
+    private String profession;
+
+    @Column(name = "address", length = 50, nullable = false)
+    private String address;
+
+    @Column(name = "identity_number", length = 50, nullable = false)
+    private String identityNumber;
+
+    @Column(name = "health_care_number", length = 50, nullable = false)
+    private String healthCareNumber;
     // getters & setters
 }
 

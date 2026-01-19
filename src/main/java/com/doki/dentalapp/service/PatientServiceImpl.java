@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class PatientServiceImpl implements PatientService {
     public List<PatientDTO> getAll() {
         Clinic clinic = helperService.resolveClinicFromSecurity();
 
-        return patientRepository.findAllByClinic_Id(clinic.getId()).stream()
+        return patientRepository.findAllActiveByClinic_Id(clinic.getId()).stream()
                 .map(PatientMapper::toDTO)
                 .toList();
     }
@@ -56,13 +57,20 @@ public class PatientServiceImpl implements PatientService {
         existing.setEmail(dto.email());
         existing.setPhone(dto.phone());
         existing.setDateOfBirth(dto.dateOfBirth());
+        existing.setGender(dto.gender());
+        existing.setProfession(dto.profession());
+        existing.setAddress(dto.address());
         existing.setClinic(clinic);
 
         return PatientMapper.toDTO(patientRepository.save(existing));
     }
 
     public void delete(UUID id) {
-        patientRepository.deleteById(id);
+        Patient patient = helperService.findPatient(id);
+        patient.setActive(false);
+        patient.setUpdatedAt(LocalDateTime.now());
+        patientRepository.save(patient);
+       // patientRepository.delete(patient);
     }
 
     @Override

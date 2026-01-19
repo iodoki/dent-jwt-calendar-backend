@@ -17,6 +17,12 @@ public class PatientMapper {
                 patient.getEmail(),
                 patient.getPhone(),
                 patient.getDateOfBirth(),
+                patient.getActive(),
+                patient.getGender(),
+                patient.getProfession(),
+                patient.getAddress(),
+                patient.getIdentityNumber(),
+                patient.getHealthCareNumber(),
                 patient.getClinic() != null ? patient.getClinic().getId() : null
         );
     }
@@ -30,6 +36,12 @@ public class PatientMapper {
                 .email(dto.email())
                 .phone(dto.phone())
                 .dateOfBirth(dto.dateOfBirth())
+                .active(Boolean.TRUE)
+                .gender(dto.gender())
+                .profession(dto.profession())
+                .address(dto.address())
+                .identityNumber(dto.identityNumber())
+                .healthCareNumber(dto.healthCareNumber())
                 .clinic(clinic)
                 .build();
     }
