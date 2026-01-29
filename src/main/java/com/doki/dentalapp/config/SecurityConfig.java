@@ -64,7 +64,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(allowedOrigins); // Vue dev server
+      //  config.setAllowedOrigins(allowedOrigins); Vue dev server
+        config.setAllowedOrigins(List.of("https://dentalconnect.al"));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

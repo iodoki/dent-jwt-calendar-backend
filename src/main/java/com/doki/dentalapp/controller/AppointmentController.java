@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.SSLEngineResult;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -64,4 +65,12 @@ public class AppointmentController {
     ) {
         return service.findAppointmentsByClinicAndGivenDate(date);
     }
+
+    @PutMapping("/{id}/notes")
+    public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody String note) {
+        System.out.println("Notes: " + note);
+        service.updateAppointmentNotes(id, note.replace("\"", ""));
+        return ResponseEntity.ok().build() ;
+    }
+
 }

@@ -152,6 +152,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 }).collect(Collectors.toList());
     }
 
+    @Override
+    public void updateAppointmentNotes(UUID id, String notes) {
+            Appointment appointment = helperService.findAppointment(id);
+            appointment.setNotes(notes);
+            appointmentRepository.save(appointment);
+    }
+
     public List<ServiceNCategoryDTO> handleAppointmentServices(
             List<ServiceNCategoryDTO> serviceDTOs,
             Appointment appointment,

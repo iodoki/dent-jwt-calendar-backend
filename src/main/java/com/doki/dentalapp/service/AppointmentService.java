@@ -15,5 +15,6 @@ public interface AppointmentService {
     void deleteAppointment(UUID id);
     List<AppointmentNServicesDTO> findAppointmentsByClinicAndStartEndDateBetween(LocalDate startDate, LocalDate endDate, String view);
     List<AppointmentNServicesDTO> findAppointmentsByClinicAndGivenDate(LocalDate date);
+    void updateAppointmentNotes(UUID id, String notes);
 
 }
